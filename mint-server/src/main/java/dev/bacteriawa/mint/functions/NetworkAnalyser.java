@@ -396,14 +396,14 @@ public class NetworkAnalyser {
         return sb.toString();
     }
 
-    public static String buildDiscordWebhookPayload(String reportText, int topLimit) {
+    public static String buildDiscordWebhookPayload(String title, String reportText, int topLimit) {
         JsonObject root = new JsonObject();
         root.addProperty("username", "Mint Network Analyser");
         root.addProperty("content", reportText);
 
         JsonArray embeds = new JsonArray();
         JsonObject embed = new JsonObject();
-        embed.addProperty("title", "Mint Network Analyser Report");
+        embed.addProperty("title", title != null && !title.isBlank() ? title : "Mint Network Analyser Report");
         embed.addProperty("color", 0x06D094); // Mint accent color
 
         long duration = getRunningTime();
@@ -480,14 +480,14 @@ public class NetworkAnalyser {
         return new Gson().toJson(root);
     }
 
-    public static void sendWebhookReport(String webhookUrl, int topLimit) {
+    public static void sendWebhookReport(String webhookUrl, String title, int topLimit) {
         if (webhookUrl == null || webhookUrl.isBlank()) {
             LOGGER.warn("[NetworkAnalyser] Webhook URL is empty, skipping webhook dispatch.");
             return;
         }
 
         try {
-            String payload = buildDiscordWebhookPayload(generateReportText(topLimit), topLimit);
+            String payload = buildDiscordWebhookPayload(title, generateReportText(topLimit), topLimit);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(webhookUrl))
@@ -514,11 +514,42 @@ public class NetworkAnalyser {
         }
     }
 
-    public static synchronized void startScheduledAnalysis(int intervalMinutes, int durationMinutes, String webhookUrl) {
+    public static void sendWebhookReportSync(String webhookUrl, String title, int topLimit) {
+        if (webhookUrl == null || webhookUrl.isBlank() || isEmpty()) {
+            return;
+        }
+
+        try {
+            String payload = buildDiscordWebhookPayload(title, generateReportText(topLimit), topLimit);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(webhookUrl))
+                    .header("Content-Type", "application/json")
+                    .header("User-Agent", "Mint-NetworkAnalyser/1.0")
+                    .timeout(Duration.ofSeconds(5))
+                    .POST(HttpRequest.BodyPublishers.ofString(payload, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                LOGGER.info("[NetworkAnalyser] Shutdown report successfully sent to webhook.");
+            } else {
+                LOGGER.warn("[NetworkAnalyser] Webhook returned HTTP {}: {}", response.statusCode(), response.body());
+            }
+        } catch (Exception e) {
+            LOGGER.error("[NetworkAnalyser] Failed to send shutdown report to webhook: {}", e.getMessage());
+        }
+    }
+
+    public static synchronized void startContinuousAnalysis(int intervalMinutes, String webhookUrl) {
         stopScheduledAnalysis();
 
-        if (intervalMinutes <= 0 || durationMinutes <= 0) {
-            LOGGER.warn("[NetworkAnalyser] Invalid schedule configuration: interval={}, duration={}", intervalMinutes, durationMinutes);
+        // Start tracking immediately on startup
+        start();
+        LOGGER.info("[NetworkAnalyser] Started network analyser on server startup.");
+
+        if (intervalMinutes <= 0) {
+            LOGGER.warn("[NetworkAnalyser] Invalid interval: {}. Periodic reporting disabled.", intervalMinutes);
             return;
         }
 
@@ -528,27 +559,36 @@ public class NetworkAnalyser {
             return t;
         });
 
-        LOGGER.info("[NetworkAnalyser] Scheduled analysis enabled. Runs every {} minute(s) for {} minute(s).", intervalMinutes, durationMinutes);
+        LOGGER.info("[NetworkAnalyser] Periodic reporting enabled. Reports will be sent to webhook every {} minute(s).", intervalMinutes);
 
         scheduledExecutor.scheduleAtFixedRate(() -> {
             try {
-                LOGGER.info("[NetworkAnalyser] Starting scheduled network analysis (duration: {} minutes)...", durationMinutes);
-                start();
-
-                scheduledExecutor.schedule(() -> {
-                    try {
-                        stop();
-                        LOGGER.info("[NetworkAnalyser] Scheduled network analysis finished. Dispatching report to webhook...");
-                        sendWebhookReport(webhookUrl, 10);
-                    } catch (Exception e) {
-                        LOGGER.error("[NetworkAnalyser] Error stopping scheduled analysis", e);
-                    }
-                }, durationMinutes, TimeUnit.MINUTES);
-
+                LOGGER.info("[NetworkAnalyser] Generating periodic network report (last {} minutes)...", intervalMinutes);
+                sendWebhookReport(webhookUrl, "📊 Mint Network Analyser - Hourly Report", 10);
+                reset();
             } catch (Exception e) {
-                LOGGER.error("[NetworkAnalyser] Error during scheduled analysis run", e);
+                LOGGER.error("[NetworkAnalyser] Error during periodic network analysis reporting cycle", e);
             }
         }, intervalMinutes, intervalMinutes, TimeUnit.MINUTES);
+    }
+
+    public static void handleShutdown() {
+        try {
+            if (running) {
+                stop();
+                if (dev.bacteriawa.mint.config.modules.misc.NetworkAnalyserConfig.sendOnShutdown
+                        && !dev.bacteriawa.mint.config.modules.misc.NetworkAnalyserConfig.webhookUrl.isBlank()
+                        && !isEmpty()) {
+                    LOGGER.info("[NetworkAnalyser] Sending shutdown network report to webhook...");
+                    sendWebhookReportSync(dev.bacteriawa.mint.config.modules.misc.NetworkAnalyserConfig.webhookUrl,
+                            "🛑 Mint Network Analyser - Server Shutdown Report", 10);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("[NetworkAnalyser] Error during shutdown report dispatch", e);
+        } finally {
+            stopScheduledAnalysis();
+        }
     }
 
     public static synchronized void stopScheduledAnalysis() {

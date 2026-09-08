@@ -129,7 +129,7 @@ public class NetworkAnalyserCommand extends MintSubCommand {
             }
 
             sender.sendMessage(Component.text("Dispatching network analysis report to webhook...").color(TextColor.color(170, 170, 255)));
-            NetworkAnalyser.sendWebhookReport(url, limit);
+            NetworkAnalyser.sendWebhookReport(url, "📊 Mint Network Analyser - Manual Report", limit);
             return true;
         }
     }

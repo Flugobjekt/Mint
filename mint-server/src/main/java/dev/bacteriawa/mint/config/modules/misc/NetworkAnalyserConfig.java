@@ -14,26 +14,34 @@ public class NetworkAnalyserConfig {
     public static boolean networkAnalyserEnabled = true;
 
     @Configuration
-    public static boolean scheduledAnalysisEnabled = true;
+    public static boolean startOnStartup = true;
 
     @Configuration
     public static int scheduledIntervalMinutes = 60;
 
     @Configuration
-    public static int scheduledDurationMinutes = 10;
+    public static String webhookUrl = "";
 
     @Configuration
-    public static String webhookUrl = "";
+    public static boolean sendOnShutdown = true;
+
+    private static boolean shutdownHookRegistered = false;
 
     public static void loaded(CommentedFileConfig config) {
         if (networkAnalyserEnabled) {
             Bukkit.getCommandMap().register("networkanalyser", "mint", new NetworkAnalyserCommand());
 
-            if (scheduledAnalysisEnabled) {
-                NetworkAnalyser.startScheduledAnalysis(scheduledIntervalMinutes, scheduledDurationMinutes, webhookUrl);
+            if (startOnStartup) {
+                NetworkAnalyser.startContinuousAnalysis(scheduledIntervalMinutes, webhookUrl);
+            }
+
+            if (!shutdownHookRegistered) {
+                shutdownHookRegistered = true;
+                Runtime.getRuntime().addShutdownHook(new Thread(NetworkAnalyser::handleShutdown, "Mint-NetworkAnalyser-ShutdownHook"));
             }
         } else {
             NetworkAnalyser.stopScheduledAnalysis();
+            NetworkAnalyser.stop();
         }
     }
 }
