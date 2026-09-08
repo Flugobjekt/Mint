@@ -25,6 +25,9 @@ public class NetworkAnalyserConfig {
     @Configuration
     public static boolean sendOnShutdown = true;
 
+    @Configuration
+    public static boolean useWebhookEmbed = false;
+
     private static boolean shutdownHookRegistered = false;
 
     public static void loaded(CommentedFileConfig config) {

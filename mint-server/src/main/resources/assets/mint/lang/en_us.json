@@ -40,6 +40,7 @@
   "misc.networkanalyser.scheduledIntervalMinutes": "Interval in minutes for periodic reports sent to the webhook (default: 60).",
   "misc.networkanalyser.webhookUrl": "Webhook URL (e.g. Discord webhook) to send network reports to.",
   "misc.networkanalyser.sendOnShutdown": "Whether to send a final network analysis report to the webhook on server shutdown/restart.",
+  "misc.networkanalyser.useWebhookEmbed": "Whether to include a Discord embed in webhook reports. Disabled by default; the normal message is always sent.",
   "misc.networkbar.networkBarEnabled": "This config is used to enable network bar.",
   "misc.networkbar.trafficFormat": "This config is used to set network bar traffic format.",
   "misc.networkbar.updateInterval": "This config is used to set network bar update interval.",

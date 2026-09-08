@@ -472,8 +472,10 @@ public class NetworkAnalyser {
         embed.add("fields", fields);
         embed.addProperty("timestamp", Instant.now().toString());
 
-        embeds.add(embed);
-        root.add("embeds", embeds);
+        if (dev.bacteriawa.mint.config.modules.misc.NetworkAnalyserConfig.useWebhookEmbed) {
+            embeds.add(embed);
+            root.add("embeds", embeds);
+        }
 
         return new Gson().toJson(root);
     }

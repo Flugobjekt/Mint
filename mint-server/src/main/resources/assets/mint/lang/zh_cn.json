@@ -40,6 +40,7 @@
   "misc.networkanalyser.scheduledIntervalMinutes": "向 Webhook 发送定期报告的间隔时间（分钟，默认 60）",
   "misc.networkanalyser.webhookUrl": "发送网络分析报告的 Webhook 地址（如 Discord Webhook）",
   "misc.networkanalyser.sendOnShutdown": "服务器关闭或重启时是否向 Webhook 发送最终报告",
+  "misc.networkanalyser.useWebhookEmbed": "是否在 Webhook 报告中附加 Discord Embed（默认关闭，普通消息始终发送）",
   "misc.networkbar.networkBarEnabled": "启用网络显示条.",
   "misc.networkbar.trafficFormat": "流量显示格式.",
   "misc.networkbar.updateInterval": "网络显示条更新间隔(以`刻`为单位).",
