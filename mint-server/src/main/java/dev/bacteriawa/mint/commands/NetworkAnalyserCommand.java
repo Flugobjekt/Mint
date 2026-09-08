@@ -2,6 +2,7 @@ package dev.bacteriawa.mint.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import dev.bacteriawa.mint.config.modules.misc.NetworkAnalyserConfig;
 import dev.bacteriawa.mint.functions.NetworkAnalyser;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -17,21 +18,23 @@ public class NetworkAnalyserCommand extends MintSubCommand {
     public NetworkAnalyserCommand() {
         super("networkanalyser", MintCommand.MINT_ADMIN_PERMISSION);
         if (false) this.setPermission("mint.networkanalyser");
-        this.setUsage("/networkanalyser <start|stop|reset|view> [limit] - Network analysis tool for monitoring packet traffic");
+        this.setUsage("/networkanalyser <start|stop|reset|view|webhook> [limit] - Network analysis tool for monitoring packet traffic");
 
         subcommands.put("start", new StartCommand());
         subcommands.put("stop", new StopCommand());
         subcommands.put("reset", new ResetCommand());
         subcommands.put("view", new ViewCommand());
+        subcommands.put("webhook", new WebhookCommand());
         MintCommand.registerSubCommand(this);
     }
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(Component.text("Usage: /networkanalyser <start|stop|reset|view> [limit]").color(TextColor.color(255, 0, 0)));
+            sender.sendMessage(Component.text("Usage: /networkanalyser <start|stop|reset|view|webhook> [limit]").color(TextColor.color(255, 0, 0)));
             sender.sendMessage(Component.text("Use '/networkanalyser start' to begin packet analysis").color(TextColor.color(255, 0, 0)));
             sender.sendMessage(Component.text("Use '/networkanalyser view [limit]' to display collected data").color(TextColor.color(255, 0, 0)));
+            sender.sendMessage(Component.text("Use '/networkanalyser webhook [limit]' to dispatch report to configured webhook").color(TextColor.color(255, 0, 0)));
             return true;
         }
         
@@ -52,9 +55,9 @@ public class NetworkAnalyserCommand extends MintSubCommand {
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("start", "stop", "reset", "view");
+            return Arrays.asList("start", "stop", "reset", "view", "webhook");
         }
-        if (args.length == 2 && "view".equals(args[0].toLowerCase())) {
+        if (args.length == 2 && ("view".equals(args[0].toLowerCase()) || "webhook".equals(args[0].toLowerCase()))) {
             return Arrays.asList("5", "7", "10", "15");
         }
         return List.of();
@@ -97,6 +100,40 @@ public class NetworkAnalyserCommand extends MintSubCommand {
         }
     }
     
+    private static class WebhookCommand implements SubCommand {
+        @Override
+        public boolean execute(CommandSender sender, String[] args) {
+            String url = NetworkAnalyserConfig.webhookUrl;
+            int limit = 10;
+
+            if (args.length > 0) {
+                try {
+                    limit = Integer.parseInt(args[0]);
+                    limit = Math.max(1, Math.min(limit, 25));
+                } catch (NumberFormatException ignored) {
+                }
+            }
+
+            if (args.length > 1 && !args[1].isBlank()) {
+                url = args[1];
+            }
+
+            if (url == null || url.isBlank()) {
+                sender.sendMessage(Component.text("Webhook URL is not configured. Set 'webhookUrl' in mint config or pass as argument.").color(TextColor.color(255, 0, 0)));
+                return true;
+            }
+
+            if (NetworkAnalyser.isEmpty()) {
+                sender.sendMessage(Component.text("There is no collected network data to report.").color(TextColor.color(255, 255, 0)));
+                return true;
+            }
+
+            sender.sendMessage(Component.text("Dispatching network analysis report to webhook...").color(TextColor.color(170, 170, 255)));
+            NetworkAnalyser.sendWebhookReport(url, limit);
+            return true;
+        }
+    }
+
     private static class ViewCommand implements SubCommand {
         @Override
         public boolean execute(CommandSender sender, String[] args) {

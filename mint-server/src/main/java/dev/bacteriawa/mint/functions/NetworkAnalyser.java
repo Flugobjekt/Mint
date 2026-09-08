@@ -1,17 +1,38 @@
 package dev.bacteriawa.mint.functions;
 
 import net.minecraft.network.Connection;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 public class NetworkAnalyser {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NetworkAnalyser.class);
+    private static ScheduledExecutorService scheduledExecutor = null;
+    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
     private static volatile boolean running = false;
     private static volatile long startTime = 0;
     private static volatile long stopTime = 0;
@@ -312,5 +333,228 @@ public class NetworkAnalyser {
             total += adder.sum();
         }
         return total;
+    }
+
+    public static String formatBytes(long bytes) {
+        if (bytes < 1024) {
+            return bytes + " B";
+        } else if (bytes < 1024 * 1024) {
+            return String.format(Locale.ROOT, "%.2f KB", bytes / 1024.0);
+        } else if (bytes < 1024 * 1024 * 1024) {
+            return String.format(Locale.ROOT, "%.2f MB", bytes / (1024.0 * 1024));
+        } else {
+            return String.format(Locale.ROOT, "%.2f GB", bytes / (1024.0 * 1024 * 1024));
+        }
+    }
+
+    public static String formatBps(long bps) {
+        if (bps < 1000) {
+            return bps + " bps";
+        } else if (bps < 1000000) {
+            return String.format(Locale.ROOT, "%.2f Kbps", bps / 1000.0);
+        } else {
+            return String.format(Locale.ROOT, "%.2f Mbps", bps / 1000000.0);
+        }
+    }
+
+    public static String generateReportText(int topLimit) {
+        long duration = getRunningTime();
+        double durationSec = duration / 1000.0;
+        long totalPackets = getTotalPacketCount();
+        long totalBytes = getTotalPacketSize();
+        double avgPps = getAveragePacketsPerSecond();
+        double avgBps = getAverageBytesPerSecond();
+        long rxPackets = getTotalReceivedPacketCount();
+        long rxBytes = getTotalReceivedPacketSize();
+        long txPackets = getTotalSentPacketCount();
+        long txBytes = getTotalSentPacketSize();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("**Network Analyser Report**\n");
+        sb.append(String.format(Locale.ROOT, "• **Duration:** %.2fs (%.2f min)\n", durationSec, durationSec / 60.0));
+        sb.append(String.format(Locale.ROOT, "• **Total Packets:** %,d (%.1f pps)\n", totalPackets, avgPps));
+        sb.append(String.format(Locale.ROOT, "  - Received: %,d (%s)\n", rxPackets, formatBytes(rxBytes)));
+        sb.append(String.format(Locale.ROOT, "  - Sent: %,d (%s)\n", txPackets, formatBytes(txBytes)));
+        sb.append(String.format(Locale.ROOT, "• **Total Traffic:** %s (%s)\n\n", formatBytes(totalBytes), formatBps((long) avgBps * 8)));
+
+        sb.append(String.format(Locale.ROOT, "**Top %d Packet Types by Size:**\n```\n", topLimit));
+        sb.append(String.format(Locale.ROOT, "%-4s %-32s %-10s %s\n", "Rank", "Packet Type", "Count", "Size"));
+        sb.append("------------------------------------------------------------\n");
+
+        Map<String, Long> sortedPackets = getSortedPacketSizes();
+        int rank = 1;
+        for (Map.Entry<String, Long> entry : sortedPackets.entrySet()) {
+            if (rank > topLimit) break;
+            String type = entry.getKey();
+            long size = entry.getValue();
+            long count = getPacketCount(type);
+            String displayType = type.length() > 32 ? type.substring(0, 29) + "..." : type;
+            sb.append(String.format(Locale.ROOT, "#%-3d %-32s %-10d %s\n", rank, displayType, count, formatBytes(size)));
+            rank++;
+        }
+        sb.append("```");
+        return sb.toString();
+    }
+
+    public static String buildDiscordWebhookPayload(String reportText, int topLimit) {
+        JsonObject root = new JsonObject();
+        root.addProperty("username", "Mint Network Analyser");
+        root.addProperty("content", reportText);
+
+        JsonArray embeds = new JsonArray();
+        JsonObject embed = new JsonObject();
+        embed.addProperty("title", "Mint Network Analyser Report");
+        embed.addProperty("color", 0x06D094); // Mint accent color
+
+        long duration = getRunningTime();
+        double durationSec = duration / 1000.0;
+        long totalPackets = getTotalPacketCount();
+        long totalBytes = getTotalPacketSize();
+        double avgPps = getAveragePacketsPerSecond();
+        double avgBps = getAverageBytesPerSecond();
+        long rxPackets = getTotalReceivedPacketCount();
+        long rxBytes = getTotalReceivedPacketSize();
+        long txPackets = getTotalSentPacketCount();
+        long txBytes = getTotalSentPacketSize();
+
+        JsonArray fields = new JsonArray();
+
+        JsonObject fDuration = new JsonObject();
+        fDuration.addProperty("name", "Duration");
+        fDuration.addProperty("value", String.format(Locale.ROOT, "%.1f min (%.0fs)", durationSec / 60.0, durationSec));
+        fDuration.addProperty("inline", true);
+        fields.add(fDuration);
+
+        JsonObject fPackets = new JsonObject();
+        fPackets.addProperty("name", "Total Packets");
+        fPackets.addProperty("value", String.format(Locale.ROOT, "%,d\n(%.1f pps)", totalPackets, avgPps));
+        fPackets.addProperty("inline", true);
+        fields.add(fPackets);
+
+        JsonObject fTraffic = new JsonObject();
+        fTraffic.addProperty("name", "Total Traffic");
+        fTraffic.addProperty("value", String.format(Locale.ROOT, "%s\n(%s)", formatBytes(totalBytes), formatBps((long) avgBps * 8)));
+        fTraffic.addProperty("inline", true);
+        fields.add(fTraffic);
+
+        JsonObject fReceived = new JsonObject();
+        fReceived.addProperty("name", "Received (In)");
+        fReceived.addProperty("value", String.format(Locale.ROOT, "%,d packets\n%s", rxPackets, formatBytes(rxBytes)));
+        fReceived.addProperty("inline", true);
+        fields.add(fReceived);
+
+        JsonObject fSent = new JsonObject();
+        fSent.addProperty("name", "Sent (Out)");
+        fSent.addProperty("value", String.format(Locale.ROOT, "%,d packets\n%s", txPackets, formatBytes(txBytes)));
+        fSent.addProperty("inline", true);
+        fields.add(fSent);
+
+        StringBuilder topTable = new StringBuilder();
+        topTable.append("```\n");
+        topTable.append(String.format(Locale.ROOT, "%-4s %-28s %-8s %s\n", "Rank", "Type", "Count", "Size"));
+        Map<String, Long> sortedPackets = getSortedPacketSizes();
+        int rank = 1;
+        for (Map.Entry<String, Long> entry : sortedPackets.entrySet()) {
+            if (rank > topLimit) break;
+            String type = entry.getKey();
+            long size = entry.getValue();
+            long count = getPacketCount(type);
+            String displayType = type.length() > 28 ? type.substring(0, 25) + "..." : type;
+            topTable.append(String.format(Locale.ROOT, "#%-3d %-28s %-8d %s\n", rank, displayType, count, formatBytes(size)));
+            rank++;
+        }
+        topTable.append("```");
+
+        JsonObject fTop = new JsonObject();
+        fTop.addProperty("name", "Top Packets");
+        fTop.addProperty("value", topTable.toString());
+        fTop.addProperty("inline", false);
+        fields.add(fTop);
+
+        embed.add("fields", fields);
+        embed.addProperty("timestamp", Instant.now().toString());
+
+        embeds.add(embed);
+        root.add("embeds", embeds);
+
+        return new Gson().toJson(root);
+    }
+
+    public static void sendWebhookReport(String webhookUrl, int topLimit) {
+        if (webhookUrl == null || webhookUrl.isBlank()) {
+            LOGGER.warn("[NetworkAnalyser] Webhook URL is empty, skipping webhook dispatch.");
+            return;
+        }
+
+        try {
+            String payload = buildDiscordWebhookPayload(generateReportText(topLimit), topLimit);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(webhookUrl))
+                    .header("Content-Type", "application/json")
+                    .header("User-Agent", "Mint-NetworkAnalyser/1.0")
+                    .timeout(Duration.ofSeconds(15))
+                    .POST(HttpRequest.BodyPublishers.ofString(payload, StandardCharsets.UTF_8))
+                    .build();
+
+            HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                    .thenAccept(response -> {
+                        if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                            LOGGER.info("[NetworkAnalyser] Report successfully sent to webhook.");
+                        } else {
+                            LOGGER.warn("[NetworkAnalyser] Webhook returned HTTP {}: {}", response.statusCode(), response.body());
+                        }
+                    })
+                    .exceptionally(throwable -> {
+                        LOGGER.error("[NetworkAnalyser] Failed to send report to webhook", throwable);
+                        return null;
+                    });
+        } catch (Exception e) {
+            LOGGER.error("[NetworkAnalyser] Error preparing webhook request", e);
+        }
+    }
+
+    public static synchronized void startScheduledAnalysis(int intervalMinutes, int durationMinutes, String webhookUrl) {
+        stopScheduledAnalysis();
+
+        if (intervalMinutes <= 0 || durationMinutes <= 0) {
+            LOGGER.warn("[NetworkAnalyser] Invalid schedule configuration: interval={}, duration={}", intervalMinutes, durationMinutes);
+            return;
+        }
+
+        scheduledExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "Mint-NetworkAnalyser-Scheduler");
+            t.setDaemon(true);
+            return t;
+        });
+
+        LOGGER.info("[NetworkAnalyser] Scheduled analysis enabled. Runs every {} minute(s) for {} minute(s).", intervalMinutes, durationMinutes);
+
+        scheduledExecutor.scheduleAtFixedRate(() -> {
+            try {
+                LOGGER.info("[NetworkAnalyser] Starting scheduled network analysis (duration: {} minutes)...", durationMinutes);
+                start();
+
+                scheduledExecutor.schedule(() -> {
+                    try {
+                        stop();
+                        LOGGER.info("[NetworkAnalyser] Scheduled network analysis finished. Dispatching report to webhook...");
+                        sendWebhookReport(webhookUrl, 10);
+                    } catch (Exception e) {
+                        LOGGER.error("[NetworkAnalyser] Error stopping scheduled analysis", e);
+                    }
+                }, durationMinutes, TimeUnit.MINUTES);
+
+            } catch (Exception e) {
+                LOGGER.error("[NetworkAnalyser] Error during scheduled analysis run", e);
+            }
+        }, intervalMinutes, intervalMinutes, TimeUnit.MINUTES);
+    }
+
+    public static synchronized void stopScheduledAnalysis() {
+        if (scheduledExecutor != null && !scheduledExecutor.isShutdown()) {
+            scheduledExecutor.shutdownNow();
+            scheduledExecutor = null;
+        }
     }
 }
