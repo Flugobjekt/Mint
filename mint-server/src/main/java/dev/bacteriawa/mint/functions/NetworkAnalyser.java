@@ -388,8 +388,7 @@ public class NetworkAnalyser {
             String type = entry.getKey();
             long size = entry.getValue();
             long count = getPacketCount(type);
-            String displayType = type.length() > 32 ? type.substring(0, 29) + "..." : type;
-            sb.append(String.format(Locale.ROOT, "#%-3d %-32s %-10d %s\n", rank, displayType, count, formatBytes(size)));
+            sb.append(String.format(Locale.ROOT, "#%-3d %s | %,d | %s\n", rank, type, count, formatBytes(size)));
             rank++;
         }
         sb.append("```");
@@ -459,8 +458,7 @@ public class NetworkAnalyser {
             String type = entry.getKey();
             long size = entry.getValue();
             long count = getPacketCount(type);
-            String displayType = type.length() > 28 ? type.substring(0, 25) + "..." : type;
-            topTable.append(String.format(Locale.ROOT, "#%-3d %-28s %-8d %s\n", rank, displayType, count, formatBytes(size)));
+            topTable.append(String.format(Locale.ROOT, "#%-3d %s | %,d | %s\n", rank, type, count, formatBytes(size)));
             rank++;
         }
         topTable.append("```");

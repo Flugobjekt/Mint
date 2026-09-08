@@ -389,7 +389,7 @@ index 10a0be7a4db1a51579d113d279af7a9effe7f438..d3d3d6468c09b5f33ac98f6938b849d4
      @Override
      public boolean isBrandCompatible(final @NotNull Key brandId) {
 -        return brandId.equals(this.brandId);
-+        return brandId.equals(this.brandId) || brandId.equals(BRAND_PAPER_ID); // Mint
++        return brandId.equals(this.brandId) || brandId.equals(BRAND_PAPER_ID) || brandId.equals(Key.key("papermc", "folia")); // Mint
      }
  
      @Override
