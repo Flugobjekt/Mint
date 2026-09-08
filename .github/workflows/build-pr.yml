@@ -31,8 +31,11 @@ jobs:
           git config --global user.email "no-reply@github.com"
           git config --global user.name "Github Actions"
 
-      - name: ApplyAllPatches
-        run: ./gradlew applyAllPatches --stacktrace --no-daemon
+      - name: Apply upstream patches
+        run: ./gradlew applyFoliaPatches --stacktrace --no-daemon --no-parallel --no-configuration-cache
+
+      - name: Apply server patches
+        run: ./gradlew :mint-server:applyAllServerPatches --stacktrace --no-daemon --no-parallel --no-configuration-cache
 
       - name: Create CreateJar
         run: ./gradlew createPaperclipJar --stacktrace --no-daemon

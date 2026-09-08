@@ -33,8 +33,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Apply Patches
-        run: ./gradlew applyAllPatches --stacktrace --no-daemon
+      - name: Apply upstream patches
+        run: ./gradlew applyFoliaPatches --stacktrace --no-daemon --no-parallel --no-configuration-cache
+
+      - name: Apply server patches
+        run: ./gradlew :mint-server:applyAllServerPatches --stacktrace --no-daemon --no-parallel --no-configuration-cache
 
       - name: CreateJar
         run: ./gradlew createPaperclipJar --stacktrace --no-daemon

@@ -10,7 +10,14 @@ pluginManagement {
 
     plugins {
         id("moe.luminolmc.hyacinthusweight.patcher") version weightVersion
-        id("moe.luminolmc.hyacinthusweight.core") version weightVersion
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "moe.luminolmc.hyacinthusweight.patcher") {
+                useModule("moe.luminolmc.hyacinthusweight:hyacinthusweight-core:$weightVersion")
+            }
+        }
     }
 }
 
