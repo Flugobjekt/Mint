@@ -8,10 +8,10 @@ As part of: Leaf (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/leaf-ser
 Licensed under: GPL-3.0 (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/licenses/GPL-3.0.txt)
 
 diff --git a/net/minecraft/world/entity/item/FallingBlockEntity.java b/net/minecraft/world/entity/item/FallingBlockEntity.java
-index f60001e9a022ed985c501bdd1cafeaf9d965efd5..3fe3ea40861c4ba168fb2dd95101a1d1cb7ff641 100644
+index a85746b5eaf17f1715545df41bc6e54253f11fa7..8bc065a3c291f535699757bf8bb105e6c0e8cad1 100644
 --- a/net/minecraft/world/entity/item/FallingBlockEntity.java
 +++ b/net/minecraft/world/entity/item/FallingBlockEntity.java
-@@ -386,4 +386,11 @@ public class FallingBlockEntity extends Entity {
+@@ -387,4 +387,11 @@ public class FallingBlockEntity extends Entity {
          this.forceTickAfterTeleportToDuplicate = newEntity != null && fromOrToEnd && (io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.allowUnsafeEndPortalTeleportation || dev.bacteriawa.mint.config.modules.fixes.UnsafeTeleportationConfig.enabled); // Paper // Mint
          return newEntity;
      }

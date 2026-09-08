@@ -10,7 +10,7 @@ As part of: C2ME (https://github.com/RelativityMC/C2ME-fabric)
 Licensed under: MIT (https://opensource.org/licenses/MIT)
 
 diff --git a/net/minecraft/world/level/levelgen/feature/OreFeature.java b/net/minecraft/world/level/levelgen/feature/OreFeature.java
-index 87a17aad0e5d3f66b1177a628d82fa890e4a7707..89df249b78e909f9f6d6e13235b6491909ed9efc 100644
+index 58e660e31437593971d2b7f631bbb0f9097d4ee2..5bf016144f935a082d54638f42b5e03e8483406b 100644
 --- a/net/minecraft/world/level/levelgen/feature/OreFeature.java
 +++ b/net/minecraft/world/level/levelgen/feature/OreFeature.java
 @@ -69,7 +69,7 @@ public class OreFeature extends Feature<OreConfiguration> {

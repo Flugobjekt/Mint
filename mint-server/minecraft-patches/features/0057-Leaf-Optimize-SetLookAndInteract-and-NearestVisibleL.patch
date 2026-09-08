@@ -14,7 +14,7 @@ Paper: 3859ms
 Leaf : 1363ms (-64% reduction)
 
 diff --git a/net/minecraft/world/entity/ai/behavior/SetLookAndInteract.java b/net/minecraft/world/entity/ai/behavior/SetLookAndInteract.java
-index aeeb3db038a2b861d1dc667379fd971b28476bad..8ececa682be64ac4ac955c2aebe7084894f8d8cc 100644
+index 71b8f9a7d4fe97f56fe1fc03b48e4dcd455ccd1e..614772356a7fc8cba2fbbd302921e71c6e6c01f7 100644
 --- a/net/minecraft/world/entity/ai/behavior/SetLookAndInteract.java
 +++ b/net/minecraft/world/entity/ai/behavior/SetLookAndInteract.java
 @@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
@@ -26,7 +26,7 @@ index aeeb3db038a2b861d1dc667379fd971b28476bad..8ececa682be64ac4ac955c2aebe70848
          return BehaviorBuilder.create(
              i -> i.group(
                      i.registered(MemoryModuleType.LOOK_TARGET),
-@@ -19,16 +19,22 @@ public class SetLookAndInteract {
+@@ -19,8 +19,12 @@ public class SetLookAndInteract {
                  .apply(
                      i,
                      (lookTarget, interactionTarget, nearestEntities) -> (level, body, timestamp) -> {
@@ -38,20 +38,13 @@ index aeeb3db038a2b861d1dc667379fd971b28476bad..8ececa682be64ac4ac955c2aebe70848
 +                        Optional<LivingEntity> closest = entities.findClosest(
 +                            e -> e.is(type) && e.distanceToSqr(body) <= interactionRangeSqr
 +                        );
-+
                          if (closest.isEmpty()) {
                              return false;
--                        } else {
--                            LivingEntity closestEntity = closest.get();
--                            interactionTarget.set(closestEntity);
--                            lookTarget.set(new EntityTracker(closestEntity, true));
--                            return true;
                          }
-+
-+                        LivingEntity closestEntity = closest.get();
-+                        interactionTarget.set(closestEntity);
-+                        lookTarget.set(new EntityTracker(closestEntity, true));
-+                        return true;
+@@ -29,6 +33,7 @@ public class SetLookAndInteract {
+                         interactionTarget.set(closestEntity);
+                         lookTarget.set(new EntityTracker(closestEntity, true));
+                         return true;
 +                        // Leaf end - Optimize SetLookAndInteract and NearestVisibleLivingEntities
                      }
                  )

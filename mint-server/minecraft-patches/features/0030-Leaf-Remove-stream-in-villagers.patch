@@ -8,7 +8,7 @@ As part of: Leaf (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/leaf-ser
 Licensed under: GPL-3.0 (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/licenses/GPL-3.0.txt)
 
 diff --git a/net/minecraft/world/entity/ai/behavior/TradeWithVillager.java b/net/minecraft/world/entity/ai/behavior/TradeWithVillager.java
-index 1d405a77c4cf70bd818a4f59163e5b319808d5f3..096bdabf8269164fce8e09c225eba5839a28202b 100644
+index 736ad21b73a19113c6f0f3bce6aa1cc0a41485a8..c1bb07799140ce010d7cff02ba6dc7b0dd3e43af 100644
 --- a/net/minecraft/world/entity/ai/behavior/TradeWithVillager.java
 +++ b/net/minecraft/world/entity/ai/behavior/TradeWithVillager.java
 @@ -71,9 +71,19 @@ public class TradeWithVillager extends Behavior<Villager> {
@@ -33,10 +33,10 @@ index 1d405a77c4cf70bd818a4f59163e5b319808d5f3..096bdabf8269164fce8e09c225eba583
  
      private static void throwHalfStack(final Villager villager, final Set<Item> items, final LivingEntity target) {
 diff --git a/net/minecraft/world/entity/npc/villager/Villager.java b/net/minecraft/world/entity/npc/villager/Villager.java
-index 07677108d5f11057f6bd5a02bda4e49d3b802869..cba4af374ce9ae8f26770e399b8e6f97de69a287 100644
+index f649c46cc9a34e646f8da3244866c6e011d30aa3..e96b43a0ed51a3e5933420e0621a8645b7052ced 100644
 --- a/net/minecraft/world/entity/npc/villager/Villager.java
 +++ b/net/minecraft/world/entity/npc/villager/Villager.java
-@@ -844,7 +844,17 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
+@@ -846,7 +846,17 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
  
      private int countFoodPointsInInventory() {
          SimpleContainer inventory = this.getInventory();

@@ -7,10 +7,10 @@ Original license: GPLv3
 Original project: https://github.com/embeddedt/ModernFix
 
 diff --git a/net/minecraft/nbt/CompoundTag.java b/net/minecraft/nbt/CompoundTag.java
-index 0426e0ad43d43a2ae2522125ff979941bdc8999d..cbf42b9f72c1dbb97432b4f2463b6b4ed631a37c 100644
+index b9f6aa790159b2df712244c44c55d6393c837d16..ea24c8299dc02a8f75704f94b67dd25521edb77b 100644
 --- a/net/minecraft/nbt/CompoundTag.java
 +++ b/net/minecraft/nbt/CompoundTag.java
-@@ -54,7 +54,7 @@ public final class CompoundTag implements Tag {
+@@ -51,7 +51,7 @@ public final class CompoundTag implements Tag {
  
          private static CompoundTag loadCompound(final DataInput input, final NbtAccounter accounter) throws IOException {
              accounter.accountBytes(48L);
@@ -19,7 +19,7 @@ index 0426e0ad43d43a2ae2522125ff979941bdc8999d..cbf42b9f72c1dbb97432b4f2463b6b4e
  
              byte tagType;
              while ((tagType = input.readByte()) != 0) {
-@@ -171,7 +171,7 @@ public final class CompoundTag implements Tag {
+@@ -165,7 +165,7 @@ public final class CompoundTag implements Tag {
      }
  
      public CompoundTag() {
@@ -28,7 +28,7 @@ index 0426e0ad43d43a2ae2522125ff979941bdc8999d..cbf42b9f72c1dbb97432b4f2463b6b4e
      }
  
      @Override
-@@ -400,6 +400,11 @@ public final class CompoundTag implements Tag {
+@@ -394,6 +394,11 @@ public final class CompoundTag implements Tag {
  
      @Override
      public CompoundTag copy() {

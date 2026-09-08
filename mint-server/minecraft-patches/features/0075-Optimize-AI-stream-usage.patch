@@ -8,7 +8,7 @@ stream pipelines with tight loops reduces allocations and iterator overhead whil
 preserving vanilla behavior and enabling cheap early exits.
 
 diff --git a/net/minecraft/world/entity/ai/behavior/GateBehavior.java b/net/minecraft/world/entity/ai/behavior/GateBehavior.java
-index 9fb025b05cacc901d72d93c16cf2b7e48d4dd9a6..6518b0b56a50d46bc1924fa1bc8eb1f3102a75ac 100644
+index 3adfb334068d3722329f91011c41d5e59b1956c9..54c6d2f0117f62cba39af41b56e548f1095b2c4a 100644
 --- a/net/minecraft/world/entity/ai/behavior/GateBehavior.java
 +++ b/net/minecraft/world/entity/ai/behavior/GateBehavior.java
 @@ -84,8 +84,15 @@ public class GateBehavior<E extends LivingEntity> implements BehaviorControl<E>
@@ -29,7 +29,7 @@ index 9fb025b05cacc901d72d93c16cf2b7e48d4dd9a6..6518b0b56a50d46bc1924fa1bc8eb1f3
          }
      }
 diff --git a/net/minecraft/world/entity/ai/behavior/InteractWithDoor.java b/net/minecraft/world/entity/ai/behavior/InteractWithDoor.java
-index 4397ee2f9006ae9b0e0ff6edf001ec06675a10aa..21dbc050580cdae1a50615c114f96d529d4a11af 100644
+index 8ab7f9d3ae6f4fd4dbad9a7149f0db96d19d3909..fa2d4b0b49b9d7862242dcc9fbf33700833418b9 100644
 --- a/net/minecraft/world/entity/ai/behavior/InteractWithDoor.java
 +++ b/net/minecraft/world/entity/ai/behavior/InteractWithDoor.java
 @@ -136,12 +136,23 @@ public class InteractWithDoor {
@@ -63,7 +63,7 @@ index 4397ee2f9006ae9b0e0ff6edf001ec06675a10aa..21dbc050580cdae1a50615c114f96d52
  
      private static boolean isMobComingThroughDoor(final Brain<?> otherBrain, final BlockPos doorPos) {
 diff --git a/net/minecraft/world/entity/ai/behavior/PlayTagWithOtherKids.java b/net/minecraft/world/entity/ai/behavior/PlayTagWithOtherKids.java
-index 4511318cd65358f6d43845bbcd77adcc53e6e674..57ead251c5d38fe4449625a1126ea09ae3715ba6 100644
+index daa4697092252502b57c2940178559dcbc519d5a..0f28dd8eecbcba15ac910ceee1c5fbf1c65b438b 100644
 --- a/net/minecraft/world/entity/ai/behavior/PlayTagWithOtherKids.java
 +++ b/net/minecraft/world/entity/ai/behavior/PlayTagWithOtherKids.java
 @@ -1,7 +1,6 @@
@@ -74,33 +74,33 @@ index 4511318cd65358f6d43845bbcd77adcc53e6e674..57ead251c5d38fe4449625a1126ea09a
  import java.util.List;
  import java.util.Map;
  import java.util.Optional;
-@@ -37,14 +36,23 @@ public class PlayTagWithOtherKids {
-                         return false;
-                     } else {
-                         List<LivingEntity> friendsNearby = i.get(babies);
--                        Optional<LivingEntity> otherKidChasingMe = friendsNearby.stream().filter(friend -> isFriendChasingMe(me, friend)).findAny();
--                        if (!otherKidChasingMe.isPresent()) {
-+                        LivingEntity otherKidChasingMe = null;
-+                        for (int j = 0, size = friendsNearby.size(); j < size; j++) {
-+                            LivingEntity friend = friendsNearby.get(j);
-+                            if (isFriendChasingMe(me, friend)) {
-+                                otherKidChasingMe = friend;
-+                                break;
-+                            }
+@@ -38,14 +37,23 @@ public class PlayTagWithOtherKids {
+                     }
+ 
+                     List<LivingEntity> friendsNearby = i.get(babies);
+-                    Optional<LivingEntity> otherKidChasingMe = friendsNearby.stream().filter(friend -> isFriendChasingMe(me, friend)).findAny();
+-                    if (!otherKidChasingMe.isPresent()) {
++                    LivingEntity otherKidChasingMe = null;
++                    for (int j = 0, size = friendsNearby.size(); j < size; j++) {
++                        LivingEntity friend = friendsNearby.get(j);
++                        if (isFriendChasingMe(me, friend)) {
++                            otherKidChasingMe = friend;
++                            break;
 +                        }
-+                        if (otherKidChasingMe == null) {
-                             Optional<LivingEntity> otherKidBeingChased = findSomeoneBeingChased(friendsNearby);
-                             if (otherKidBeingChased.isPresent()) {
-                                 chaseKid(interactionTarget, lookTarget, walkTarget, otherKidBeingChased.get());
-                                 return true;
-                             } else {
--                                friendsNearby.stream().findAny().ifPresent(entity -> chaseKid(interactionTarget, lookTarget, walkTarget, entity));
-+                                if (!friendsNearby.isEmpty()) {
-+                                    chaseKid(interactionTarget, lookTarget, walkTarget, friendsNearby.get(0));
-+                                }
-                                 return true;
-                             }
++                    }
++                    if (otherKidChasingMe == null) {
+                         Optional<LivingEntity> otherKidBeingChased = findSomeoneBeingChased(friendsNearby);
+                         if (otherKidBeingChased.isPresent()) {
+                             chaseKid(interactionTarget, lookTarget, walkTarget, otherKidBeingChased.get());
+                             return true;
                          } else {
+-                            friendsNearby.stream().findAny().ifPresent(entity -> chaseKid(interactionTarget, lookTarget, walkTarget, entity));
++                            if (!friendsNearby.isEmpty()) {
++                                chaseKid(interactionTarget, lookTarget, walkTarget, friendsNearby.get(0));
++                            }
+                             return true;
+                         }
+                     } else {
 @@ -76,19 +84,28 @@ public class PlayTagWithOtherKids {
  
      private static Optional<LivingEntity> findSomeoneBeingChased(final List<LivingEntity> friendsNearby) {
@@ -140,84 +140,84 @@ index 4511318cd65358f6d43845bbcd77adcc53e6e674..57ead251c5d38fe4449625a1126ea09a
      }
  
 diff --git a/net/minecraft/world/entity/ai/behavior/PrepareRamNearestTarget.java b/net/minecraft/world/entity/ai/behavior/PrepareRamNearestTarget.java
-index 3715b0df434c3f660dd1889f61793d3738588528..5ac6fb62e76c51537422bb72a3e47c1b94948c6c 100644
+index 818d7882a4d7001a9d8f90516b7368e89a5689a0..33a13d8f97a601bf3d02b97d184f91460dd926f8 100644
 --- a/net/minecraft/world/entity/ai/behavior/PrepareRamNearestTarget.java
 +++ b/net/minecraft/world/entity/ai/behavior/PrepareRamNearestTarget.java
-@@ -160,10 +160,16 @@ public class PrepareRamNearestTarget<E extends PathfinderMob> extends Behavior<E
-             }
- 
-             PathNavigation navigation = body.getNavigation();
--            return possibleRamPositions.stream().sorted(Comparator.comparingDouble(body.blockPosition()::distSqr)).filter(pos -> {
-+            BlockPos origin = body.blockPosition();
-+            possibleRamPositions.sort(Comparator.comparingDouble(origin::distSqr));
-+            for (int i = 0, size = possibleRamPositions.size(); i < size; i++) {
-+                BlockPos pos = possibleRamPositions.get(i);
-                 Path path = navigation.createPath(pos, 0);
--                return path != null && path.canReach();
--            }).findFirst();
-+                if (path != null && path.canReach()) {
-+                    return Optional.of(pos);
-+                }
-+            }
-+            return Optional.empty();
+@@ -161,10 +161,16 @@ public class PrepareRamNearestTarget<E extends PathfinderMob> extends Behavior<E
          }
+ 
+         PathNavigation navigation = body.getNavigation();
+-        return possibleRamPositions.stream().sorted(Comparator.comparingDouble(body.blockPosition()::distSqr)).filter(pos -> {
++        BlockPos origin = body.blockPosition();
++        possibleRamPositions.sort(Comparator.comparingDouble(origin::distSqr));
++        for (int i = 0, size = possibleRamPositions.size(); i < size; i++) {
++            BlockPos pos = possibleRamPositions.get(i);
+             Path path = navigation.createPath(pos, 0);
+-            return path != null && path.canReach();
+-        }).findFirst();
++            if (path != null && path.canReach()) {
++                return Optional.of(pos);
++            }
++        }
++        return Optional.empty();
      }
  
+     private boolean isWalkableBlock(final PathfinderMob body, final BlockPos targetPos) {
 diff --git a/net/minecraft/world/entity/ai/behavior/YieldJobSite.java b/net/minecraft/world/entity/ai/behavior/YieldJobSite.java
-index f759fdd31661cb5a130ce77b096a599e7e7aa4d9..685d6d853665bdde803ec2026b7d7c8939eced01 100644
+index 2d1c7fed3abf16a3e19c52d7b1486ae330f90515..3dfedf02631e93600d2f57cba078db7d5652f476 100644
 --- a/net/minecraft/world/entity/ai/behavior/YieldJobSite.java
 +++ b/net/minecraft/world/entity/ai/behavior/YieldJobSite.java
-@@ -43,23 +43,33 @@ public class YieldJobSite {
-                             if (poiType.isEmpty()) {
-                                 return true;
-                             } else {
--                                i.<List<LivingEntity>>get(nearestEntities)
--                                    .stream()
--                                    .filter(v -> v instanceof Villager && v != body)
--                                    .map(v -> (Villager)v)
--                                    .filter(LivingEntity::isAlive)
--                                    .filter(v -> nearbyWantsJobsite(poiType.get(), v, poiPos))
--                                    .findFirst()
--                                    .ifPresent(nearbyVillager -> {
--                                        walkTarget.erase();
--                                        lookTarget.erase();
--                                        potentialJob.erase();
--                                        if (nearbyVillager.getBrain().getMemory(MemoryModuleType.JOB_SITE).isEmpty()) {
--                                            BehaviorUtils.setWalkAndLookTargetMemories(nearbyVillager, poiPos, speedModifier, 1);
--                                            nearbyVillager.getBrain().setMemory(MemoryModuleType.POTENTIAL_JOB_SITE, GlobalPos.of(level.dimension(), poiPos));
--                                            level.debugSynchronizers().updatePoi(poiPos);
--                                        }
--                                    });
-+                                List<LivingEntity> nearbyEntities = i.get(nearestEntities);
-+                                Villager target = null;
-+                                for (int index = 0, size = nearbyEntities.size(); index < size; index++) {
-+                                    LivingEntity nearEntity = nearbyEntities.get(index);
-+                                    if (nearEntity == body || !(nearEntity instanceof Villager)) {
-+                                        continue;
-+                                    }
-+                                    Villager nearVillager = (Villager)nearEntity;
-+                                    if (!nearVillager.isAlive()) {
-+                                        continue;
-+                                    }
-+                                    if (!nearbyWantsJobsite(poiType.get(), nearVillager, poiPos)) {
-+                                        continue;
-+                                    }
-+                                    target = nearVillager;
-+                                    break;
-+                                }
-+                                if (target != null) {
-+                                    walkTarget.erase();
-+                                    lookTarget.erase();
-+                                    potentialJob.erase();
-+                                    if (target.getBrain().getMemory(MemoryModuleType.JOB_SITE).isEmpty()) {
-+                                        BehaviorUtils.setWalkAndLookTargetMemories(target, poiPos, speedModifier, 1);
-+                                        target.getBrain().setMemory(MemoryModuleType.POTENTIAL_JOB_SITE, GlobalPos.of(level.dimension(), poiPos));
-+                                        level.debugSynchronizers().updatePoi(poiPos);
-+                                    }
-+                                }
-                                 return true;
-                             }
+@@ -48,23 +48,33 @@ public class YieldJobSite {
+                             return true;
                          }
+ 
+-                        i.<List<LivingEntity>>get(nearestEntities)
+-                            .stream()
+-                            .filter(v -> v instanceof Villager && v != body)
+-                            .map(v -> (Villager)v)
+-                            .filter(LivingEntity::isAlive)
+-                            .filter(v -> nearbyWantsJobsite(poiType.get(), v, poiPos))
+-                            .findFirst()
+-                            .ifPresent(nearbyVillager -> {
+-                                walkTarget.erase();
+-                                lookTarget.erase();
+-                                potentialJob.erase();
+-                                if (nearbyVillager.getBrain().getMemory(MemoryModuleType.JOB_SITE).isEmpty()) {
+-                                    BehaviorUtils.setWalkAndLookTargetMemories(nearbyVillager, poiPos, speedModifier, 1);
+-                                    nearbyVillager.getBrain().setMemory(MemoryModuleType.POTENTIAL_JOB_SITE, GlobalPos.of(level.dimension(), poiPos));
+-                                    level.debugSynchronizers().updatePoi(poiPos);
+-                                }
+-                            });
++                        List<LivingEntity> nearbyEntities = i.get(nearestEntities);
++                        Villager target = null;
++                        for (int index = 0, size = nearbyEntities.size(); index < size; index++) {
++                            LivingEntity nearEntity = nearbyEntities.get(index);
++                            if (nearEntity == body || !(nearEntity instanceof Villager)) {
++                                continue;
++                            }
++                            Villager nearVillager = (Villager)nearEntity;
++                            if (!nearVillager.isAlive()) {
++                                continue;
++                            }
++                            if (!nearbyWantsJobsite(poiType.get(), nearVillager, poiPos)) {
++                                continue;
++                            }
++                            target = nearVillager;
++                            break;
++                        }
++                        if (target != null) {
++                            walkTarget.erase();
++                            lookTarget.erase();
++                            potentialJob.erase();
++                            if (target.getBrain().getMemory(MemoryModuleType.JOB_SITE).isEmpty()) {
++                                BehaviorUtils.setWalkAndLookTargetMemories(target, poiPos, speedModifier, 1);
++                                target.getBrain().setMemory(MemoryModuleType.POTENTIAL_JOB_SITE, GlobalPos.of(level.dimension(), poiPos));
++                                level.debugSynchronizers().updatePoi(poiPos);
++                            }
++                        }
+                         return true;
+                     }
+                 )
 diff --git a/net/minecraft/world/entity/ai/goal/FollowFlockLeaderGoal.java b/net/minecraft/world/entity/ai/goal/FollowFlockLeaderGoal.java
 index 8553db5f82eb62b0cb2aacc9b7071436aaf96c39..553b8af383b5ed2399848697abbeceda2a2bc17b 100644
 --- a/net/minecraft/world/entity/ai/goal/FollowFlockLeaderGoal.java
@@ -268,7 +268,7 @@ index 8553db5f82eb62b0cb2aacc9b7071436aaf96c39..553b8af383b5ed2399848697abbeceda
          }
      }
 diff --git a/net/minecraft/world/entity/ai/goal/target/ResetUniversalAngerTargetGoal.java b/net/minecraft/world/entity/ai/goal/target/ResetUniversalAngerTargetGoal.java
-index 24c0c32eb105da2e945ff6d2bb77423bac56b649..cf873403223f4121b2a9250043855625c8a7a37c 100644
+index 1f36514fc9863dba5da94fc25edd8e7ca04ccdff..ebf454f94c43a6d134cf563d34ffc87b6e4c74e3 100644
 --- a/net/minecraft/world/entity/ai/goal/target/ResetUniversalAngerTargetGoal.java
 +++ b/net/minecraft/world/entity/ai/goal/target/ResetUniversalAngerTargetGoal.java
 @@ -37,11 +37,13 @@ public class ResetUniversalAngerTargetGoal<T extends Mob & NeutralMob> extends G
@@ -471,7 +471,7 @@ index f5a1d35d41167d794409b4a585a7dc0f16ff8d96..d54c3bbb0a2d38aa7c4a12e9b135da1a
              brain.eraseMemory(MemoryModuleType.TEMPTING_PLAYER);
          }
 diff --git a/net/minecraft/world/entity/ai/sensing/WardenEntitySensor.java b/net/minecraft/world/entity/ai/sensing/WardenEntitySensor.java
-index 83285d9f3310ab7827607f0022a24b5627f7b480..90c0f444faaa9bdf37d5cb58b38eb2a0a5ab97d9 100644
+index 78a5d265067ffb14dd91af39317187b6b8cad903..6828d319ad9b06187ae09094842a5fb4dba40fb1 100644
 --- a/net/minecraft/world/entity/ai/sensing/WardenEntitySensor.java
 +++ b/net/minecraft/world/entity/ai/sensing/WardenEntitySensor.java
 @@ -2,7 +2,6 @@ package net.minecraft.world.entity.ai.sensing;

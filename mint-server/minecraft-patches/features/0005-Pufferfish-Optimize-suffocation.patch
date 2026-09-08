@@ -5,7 +5,7 @@ Subject: [PATCH] Pufferfish Optimize suffocation
 
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 201bcd06b965e2e92758a1066f1c4a0cf187b26a..82c0bbe01b16ae05dda9ab2740d457c507ecbb24 100644
+index 1cb8265c1313ad4893d45c344b03007fc4e2de4b..ec5285eb210b504462162cc766f9c56b9ff385cb 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
@@ -16,7 +16,7 @@ index 201bcd06b965e2e92758a1066f1c4a0cf187b26a..82c0bbe01b16ae05dda9ab2740d457c5
  import it.unimi.dsi.fastutil.objects.Object2LongMap;
  import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
  import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
-@@ -454,7 +455,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -473,7 +474,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          profiler.push("livingEntityBaseTick");
          if (this.isAlive() && this.level() instanceof ServerLevel level) {
              boolean isPlayer = this instanceof Player;
@@ -25,8 +25,8 @@ index 201bcd06b965e2e92758a1066f1c4a0cf187b26a..82c0bbe01b16ae05dda9ab2740d457c5
                  this.hurtServer(level, this.damageSources().inWall(), 1.0F);
              } else if (isPlayer && !level.getWorldBorder().isWithinBounds(this.getBoundingBox())) {
                  double dist = level.getWorldBorder().getDistanceToBorder(this) + level.getWorldBorder().getSafeZone();
-@@ -1442,6 +1443,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
-         return this.getHealth() <= 0.0F;
+@@ -1446,6 +1447,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+         return this.getHealth() <= 0.0F || this.dead;
      }
  
 +    // Pufferfish start - optimize suffocation
@@ -45,10 +45,10 @@ index 201bcd06b965e2e92758a1066f1c4a0cf187b26a..82c0bbe01b16ae05dda9ab2740d457c5
      public boolean hurtServer(final ServerLevel level, final DamageSource source, float damage) {
          if (this.isInvulnerableTo(level, source)) {
 diff --git a/net/minecraft/world/entity/boss/wither/WitherBoss.java b/net/minecraft/world/entity/boss/wither/WitherBoss.java
-index 419c29c003b3e690a89a14c0a9b3eb2ac3500175..5d3627e667de8063345ee8aeda0393e215a90b63 100644
+index 1ab44f34b5d18d12259717444370f886b3a56144..56d49ea6ec294f7d1eb5d9d4f49e6a1441dabbdf 100644
 --- a/net/minecraft/world/entity/boss/wither/WitherBoss.java
 +++ b/net/minecraft/world/entity/boss/wither/WitherBoss.java
-@@ -139,6 +139,13 @@ public class WitherBoss extends Monster implements RangedAttackMob {
+@@ -138,6 +138,13 @@ public class WitherBoss extends Monster implements RangedAttackMob {
          this.bossEvent.setName(this.getDisplayName());
      }
  

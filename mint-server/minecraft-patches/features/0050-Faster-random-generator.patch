@@ -14,7 +14,7 @@ ThreadUnsafeRandom (Moonrise): 102,265,100 ns
 SimpleThreadUnsafeRandom (Moonrise): 97,054,600 ns
 
 diff --git a/net/minecraft/server/level/ServerChunkCache.java b/net/minecraft/server/level/ServerChunkCache.java
-index 27389ff98942e27c2a877ea5b671caa31353d18c..d802d2e4cdb4aefb5d708165d8ea7f64f2be6f26 100644
+index 0011653c857ee82f86355cc49b170120d9f96cfd..a5b9b0a953f162471ff09dae54c54b234a48ee32 100644
 --- a/net/minecraft/server/level/ServerChunkCache.java
 +++ b/net/minecraft/server/level/ServerChunkCache.java
 @@ -156,7 +156,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
@@ -84,10 +84,10 @@ index 664c1b3008b62c533b8e3302baa994ed0c135c42..9acbb355f3aff54138a068181b0ddfdb
      RandomSource fork();
  
 diff --git a/net/minecraft/world/level/biome/Biome.java b/net/minecraft/world/level/biome/Biome.java
-index 96f2e3359774460091177068302ff0faf4671373..7e9da64037e1cb3972f09a52c17731a48ddc3b36 100644
+index afa97f1c8a0fcd49aec962eaa6f5c9cda0e0cefa..dc649b362b64d4ee58daa5412f421b2b736a96c5 100644
 --- a/net/minecraft/world/level/biome/Biome.java
 +++ b/net/minecraft/world/level/biome/Biome.java
-@@ -59,12 +59,12 @@ public final class Biome {
+@@ -58,12 +58,12 @@ public final class Biome {
      );
      public static final Codec<Holder<Biome>> CODEC = RegistryFileCodec.create(Registries.BIOME, DIRECT_CODEC);
      public static final Codec<HolderSet<Biome>> LIST_CODEC = RegistryCodecs.homogeneousList(Registries.BIOME, DIRECT_CODEC);
@@ -104,10 +104,10 @@ index 96f2e3359774460091177068302ff0faf4671373..7e9da64037e1cb3972f09a52c17731a4
      public final Biome.ClimateSettings climateSettings;
      private final BiomeGenerationSettings generationSettings;
 diff --git a/net/minecraft/world/level/chunk/ChunkGenerator.java b/net/minecraft/world/level/chunk/ChunkGenerator.java
-index f5c384dedfdc47f2428de5baab8c39f9165f01df..7e1c4920e1b0125ffe94a11431419caba6576516 100644
+index 77687181fa60e36ad47f611d29eaa7761693c5ae..01ea78489c0b3164b338a0321e3facd475b24370 100644
 --- a/net/minecraft/world/level/chunk/ChunkGenerator.java
 +++ b/net/minecraft/world/level/chunk/ChunkGenerator.java
-@@ -468,7 +468,7 @@ public abstract class ChunkGenerator {
+@@ -470,7 +470,7 @@ public abstract class ChunkGenerator {
              int x = chunk.getPos().x();
              int z = chunk.getPos().z();
              for (org.bukkit.generator.BlockPopulator populator : world.getPopulators()) {
@@ -116,7 +116,7 @@ index f5c384dedfdc47f2428de5baab8c39f9165f01df..7e1c4920e1b0125ffe94a11431419cab
                  seededrandom.setDecorationSeed(level.getSeed(), x, z);
                  populator.populate(world, new org.bukkit.craftbukkit.util.RandomSourceWrapper.RandomWrapper(seededrandom), x, z, limitedRegion);
              }
-@@ -578,7 +578,7 @@ public abstract class ChunkGenerator {
+@@ -580,7 +580,7 @@ public abstract class ChunkGenerator {
                                  if (dev.bacteriawa.mint.config.modules.misc.SecureSeedConfig.enabled) {
                                      random = new su.plo.matter.WorldgenCryptoRandom(sourceChunkPos.x(), sourceChunkPos.z(), su.plo.matter.Globals.Salt.GENERATE_FEATURE, 0);
                                  } else {
@@ -126,10 +126,10 @@ index f5c384dedfdc47f2428de5baab8c39f9165f01df..7e1c4920e1b0125ffe94a11431419cab
                                  }
                                  // Leaf end - Matter - Secure Seed
 diff --git a/net/minecraft/world/level/levelgen/DensityFunctions.java b/net/minecraft/world/level/levelgen/DensityFunctions.java
-index 985bb77d065c96cc11e9191bace21cbed15f14f1..90e52d230ec2cce1f48e6bbcc50377d6bf909de3 100644
+index ba8d4411b3868b60738b93e3d9e0f5df8a79639d..6157fa61ebcd204e867e0d3070268730a3073f44 100644
 --- a/net/minecraft/world/level/levelgen/DensityFunctions.java
 +++ b/net/minecraft/world/level/levelgen/DensityFunctions.java
-@@ -544,7 +544,7 @@ public final class DensityFunctions {
+@@ -511,7 +511,7 @@ public final class DensityFunctions {
          // Paper end - Perf: Optimize end generation
  
          public EndIslandDensityFunction(final long seed) {
@@ -139,10 +139,10 @@ index 985bb77d065c96cc11e9191bace21cbed15f14f1..90e52d230ec2cce1f48e6bbcc50377d6
              this.islandNoise = new SimplexNoise(islandRandom);
          }
 diff --git a/net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator.java b/net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator.java
-index 39e9a1c39b5312aaa2ca6d2a1ffd8ed17b9933e6..1aaf6b3de3009b0da27f2e508068d70126290211 100644
+index 3f66d1144daf7139a91bfa35e2c288d88bbae38b..167dcaf60886492738378ed8802f7893398e6dad 100644
 --- a/net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator.java
 +++ b/net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator.java
-@@ -308,7 +308,7 @@ public final class NoiseBasedChunkGenerator extends ChunkGenerator {
+@@ -313,7 +313,7 @@ public final class NoiseBasedChunkGenerator extends ChunkGenerator {
              BiomeManager correctBiomeManager = biomeManager.withDifferentSource(
                  (quartX, quartY, quartZ) -> this.biomeSource.getNoiseBiome(quartX, quartY, quartZ, randomState.sampler())
              );
@@ -151,7 +151,7 @@ index 39e9a1c39b5312aaa2ca6d2a1ffd8ed17b9933e6..1aaf6b3de3009b0da27f2e508068d701
              int range = 8;
              ChunkPos pos = chunk.getPos();
              NoiseChunk noiseChunk = chunk.getOrCreateNoiseChunk(c -> this.createNoiseChunk(c, structureManager, Blender.of(region), randomState));
-@@ -494,7 +494,7 @@ public final class NoiseBasedChunkGenerator extends ChunkGenerator {
+@@ -496,7 +496,7 @@ public final class NoiseBasedChunkGenerator extends ChunkGenerator {
          if (!this.settings.value().disableMobGeneration()) {
              ChunkPos center = worldGenRegion.getCenter();
              Holder<Biome> biome = worldGenRegion.getBiome(center.getWorldPosition().atY(worldGenRegion.getMaxY()));
@@ -161,11 +161,11 @@ index 39e9a1c39b5312aaa2ca6d2a1ffd8ed17b9933e6..1aaf6b3de3009b0da27f2e508068d701
              NaturalSpawner.spawnMobsForChunkGeneration(worldGenRegion, biome, center, random);
          }
 diff --git a/net/minecraft/world/level/levelgen/RandomState.java b/net/minecraft/world/level/levelgen/RandomState.java
-index 64e115805d9d685c521641893cac5b33d591d327..002eed8f8b574bd437a676a07c71ce57f5204414 100644
+index 7b74440fbbe79c018ad59d24b99da0c6d4a9d007..3b9917299c5dac960c5589717e7f757699ba90e5 100644
 --- a/net/minecraft/world/level/levelgen/RandomState.java
 +++ b/net/minecraft/world/level/levelgen/RandomState.java
-@@ -53,7 +53,7 @@ public final class RandomState {
-             }
+@@ -46,7 +46,7 @@ public final class RandomState {
+             private final Map<DensityFunction, DensityFunction> wrapped = new HashMap<>();
  
              private RandomSource newLegacyInstance(final long seedOffset) {
 -                return new LegacyRandomSource(seed + seedOffset);
@@ -174,7 +174,7 @@ index 64e115805d9d685c521641893cac5b33d591d327..002eed8f8b574bd437a676a07c71ce57
  
              @Override
 diff --git a/net/minecraft/world/level/levelgen/WorldgenRandom.java b/net/minecraft/world/level/levelgen/WorldgenRandom.java
-index 4e1e1920def1ed0393524b13cae8f00534138e7a..fcb3a7005d88f6f6e4973406883ff8d729dead26 100644
+index bf644302ad190b2e491a6137e03dafd0c4244470..788e49a30cde77a12183095916bb19bc088e30b3 100644
 --- a/net/minecraft/world/level/levelgen/WorldgenRandom.java
 +++ b/net/minecraft/world/level/levelgen/WorldgenRandom.java
 @@ -69,7 +69,7 @@ public class WorldgenRandom extends LegacyRandomSource {
@@ -185,12 +185,12 @@ index 4e1e1920def1ed0393524b13cae8f00534138e7a..fcb3a7005d88f6f6e4973406883ff8d7
 +        return RandomSource.createForSlimeChunk(seed + (long) x * x * 4987142 + (long) x * 5947611 + (long) z * z * 4392871L + (long) z * 389711 ^ salt); // Leaf - Faster random generator
      }
  
-     public static enum Algorithm {
+     public enum Algorithm {
 diff --git a/net/minecraft/world/level/levelgen/feature/GeodeFeature.java b/net/minecraft/world/level/levelgen/feature/GeodeFeature.java
-index eda417937c55ccea2bcc1ab38eaa430be97868e1..052da00d62010e3a5187b63b6bfaaa21e892bcdd 100644
+index ed3e710ad2ffb79e375f08f56c191c3a0c51b455..02c01125951a99fea1209b6c4c1d483d5eacc07b 100644
 --- a/net/minecraft/world/level/levelgen/feature/GeodeFeature.java
 +++ b/net/minecraft/world/level/levelgen/feature/GeodeFeature.java
-@@ -44,7 +44,7 @@ public class GeodeFeature extends Feature<GeodeConfiguration> {
+@@ -46,7 +46,7 @@ public class GeodeFeature extends Feature<GeodeConfiguration> {
          // Leaf start - Matter - Secure Seed
          WorldgenRandom random1 = dev.bacteriawa.mint.config.modules.misc.SecureSeedConfig.enabled
                  ? new su.plo.matter.WorldgenCryptoRandom(0, 0, su.plo.matter.Globals.Salt.GEODE_FEATURE, 0)
@@ -200,7 +200,7 @@ index eda417937c55ccea2bcc1ab38eaa430be97868e1..052da00d62010e3a5187b63b6bfaaa21
          NormalNoise noise = NormalNoise.create(random1, -4, 1.0);
          List<BlockPos> crackPoints = Lists.newLinkedList();
 diff --git a/net/minecraft/world/level/levelgen/feature/stateproviders/DualNoiseProvider.java b/net/minecraft/world/level/levelgen/feature/stateproviders/DualNoiseProvider.java
-index dda5e19889a1b4109305b6cf96759ac9143fed1b..8fdc0aed5d1c4a5fcc739b822f61eaac1d4955d8 100644
+index dd8185dfc411eaf2c8d8a184e686e48bef133e14..60dfce12fc6a5b1be624645c8598f101247fc3ae 100644
 --- a/net/minecraft/world/level/levelgen/feature/stateproviders/DualNoiseProvider.java
 +++ b/net/minecraft/world/level/levelgen/feature/stateproviders/DualNoiseProvider.java
 @@ -44,7 +44,7 @@ public class DualNoiseProvider extends NoiseProvider {
@@ -252,7 +252,7 @@ index 22c94cf2da951283942e871a29a1fe6242de4dca..3a680da33b866071a825e9b547efcba4
          }
          // Leaf end - Matter - Secure Seed
 diff --git a/net/minecraft/world/level/levelgen/structure/placement/StructurePlacement.java b/net/minecraft/world/level/levelgen/structure/placement/StructurePlacement.java
-index 40fac8f0d695a2cc9cc3889468827273071988f7..fdf8fe98d8b7066c116f0f3b6cc28b21b8b3ef1c 100644
+index 8ab47e0f2fdcf30e95e62e9cac81e10f6e97cf9d..c19a0b80d2e4a05111ef59cd6e986e89daf349f3 100644
 --- a/net/minecraft/world/level/levelgen/structure/placement/StructurePlacement.java
 +++ b/net/minecraft/world/level/levelgen/structure/placement/StructurePlacement.java
 @@ -119,13 +119,13 @@ public abstract class StructurePlacement {
@@ -290,28 +290,28 @@ index 40fac8f0d695a2cc9cc3889468827273071988f7..fdf8fe98d8b7066c116f0f3b6cc28b21
          random.nextInt();
          return random.nextInt((int)(1.0F / probability)) == 0;
 diff --git a/net/minecraft/world/level/levelgen/structure/structures/OceanMonumentStructure.java b/net/minecraft/world/level/levelgen/structure/structures/OceanMonumentStructure.java
-index 7db9297f4f8357e3191acd91f121101da78978bf..0ce0c2a3b6514d90ad7e886ef1cb2c23c43bd7fe 100644
+index a856c0aa3c60d2de3d36ed0a9b372f872d62dfbb..884e0ed25d003a270f70247c2f82ed089eeb5cc2 100644
 --- a/net/minecraft/world/level/levelgen/structure/structures/OceanMonumentStructure.java
 +++ b/net/minecraft/world/level/levelgen/structure/structures/OceanMonumentStructure.java
-@@ -56,7 +56,7 @@ public class OceanMonumentStructure extends Structure {
-         if (savedPieces.isEmpty()) {
+@@ -57,7 +57,7 @@ public class OceanMonumentStructure extends Structure {
              return savedPieces;
-         } else {
--            WorldgenRandom random = new WorldgenRandom(new LegacyRandomSource(RandomSupport.generateUniqueSeed()));
-+            WorldgenRandom random = new WorldgenRandom(dev.bacteriawa.mint.config.modules.optimizations.FastRNG.worldgenEnabled() ? new cn.dreeam.leaf.util.math.random.FasterRandomSource(RandomSupport.generateUniqueSeed()) : new LegacyRandomSource(RandomSupport.generateUniqueSeed())); // Leaf - Faster random generator
-             random.setLargeFeatureSeed(seed, chunkPos.x(), chunkPos.z());
-             StructurePiece oldTopPiece = savedPieces.pieces().get(0);
-             BoundingBox oldBoundingBox = oldTopPiece.getBoundingBox();
+         }
+ 
+-        WorldgenRandom random = new WorldgenRandom(new LegacyRandomSource(RandomSupport.generateUniqueSeed()));
++        WorldgenRandom random = new WorldgenRandom(dev.bacteriawa.mint.config.modules.optimizations.FastRNG.worldgenEnabled() ? new cn.dreeam.leaf.util.math.random.FasterRandomSource(RandomSupport.generateUniqueSeed()) : new LegacyRandomSource(RandomSupport.generateUniqueSeed())); // Leaf - Faster random generator
+         random.setLargeFeatureSeed(seed, chunkPos.x(), chunkPos.z());
+         StructurePiece oldTopPiece = savedPieces.pieces().get(0);
+         BoundingBox oldBoundingBox = oldTopPiece.getBoundingBox();
 diff --git a/net/minecraft/world/level/levelgen/synth/PerlinSimplexNoise.java b/net/minecraft/world/level/levelgen/synth/PerlinSimplexNoise.java
-index 6681466052ace8bb24dbaeaec4d684a7b3d73962..e2f731f20515057e9a93f3ffed624fb0fbfa189f 100644
+index 5b9aa91ee680b657e8789d38b6b5ee9820d86910..0a1eb3c89550a220951414432617840c9c76146d 100644
 --- a/net/minecraft/world/level/levelgen/synth/PerlinSimplexNoise.java
 +++ b/net/minecraft/world/level/levelgen/synth/PerlinSimplexNoise.java
-@@ -44,7 +44,7 @@ public class PerlinSimplexNoise {
+@@ -46,7 +46,7 @@ public class PerlinSimplexNoise {
  
-                 if (highFreqOctaves > 0) {
-                     long positiveOctaveSeed = (long)(zeroOctave.getValue(zeroOctave.xo, zeroOctave.yo, zeroOctave.zo) * 9.223372E18F);
--                    RandomSource highFreqRandom = new WorldgenRandom(new LegacyRandomSource(positiveOctaveSeed));
-+                    RandomSource highFreqRandom = new WorldgenRandom(dev.bacteriawa.mint.config.modules.optimizations.FastRNG.worldgenEnabled() ? new cn.dreeam.leaf.util.math.random.FasterRandomSource(positiveOctaveSeed) : new LegacyRandomSource(positiveOctaveSeed)); // Leaf - Faster random generator
+         if (highFreqOctaves > 0) {
+             long positiveOctaveSeed = (long)(zeroOctave.getValue(zeroOctave.xo, zeroOctave.yo, zeroOctave.zo) * 9.223372E18F);
+-            RandomSource highFreqRandom = new WorldgenRandom(new LegacyRandomSource(positiveOctaveSeed));
++            RandomSource highFreqRandom = new WorldgenRandom(dev.bacteriawa.mint.config.modules.optimizations.FastRNG.worldgenEnabled() ? new cn.dreeam.leaf.util.math.random.FasterRandomSource(positiveOctaveSeed) : new LegacyRandomSource(positiveOctaveSeed)); // Leaf - Faster random generator
  
-                     for (int ix = zeroOctaveIndex - 1; ix >= 0; ix--) {
-                         if (ix < octaves && octaveSet.contains(zeroOctaveIndex - ix)) {
+             for (int i = zeroOctaveIndex - 1; i >= 0; i--) {
+                 if (i < octaves && octaveSet.contains(zeroOctaveIndex - i)) {

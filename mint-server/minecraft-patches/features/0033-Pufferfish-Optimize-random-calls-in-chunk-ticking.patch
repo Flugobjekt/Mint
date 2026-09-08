@@ -52,10 +52,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index b80d42f6fc8e9145658ced58e3a856ad65507951..4536653758d6d45c66cbcf71aaf6a2373e3a6eef 100644
+index 29d41cccc4eaf830fecbd940c3f7d7a77124fe11..ac3e4998ab1eb41019cd4c0119d5e0c1fb34ba7b 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -1136,7 +1136,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -1124,7 +1124,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
          int minZ = chunkPos.getMinBlockZ();
          ProfilerFiller profiler = Profiler.get();
          profiler.push("thunder");
@@ -65,10 +65,10 @@ index b80d42f6fc8e9145658ced58e3a856ad65507951..4536653758d6d45c66cbcf71aaf6a237
              if (this.isRainingAt(pos)) {
                  DifficultyInstance difficulty = this.getCurrentDifficultyAt(pos);
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 81466a5472eaee3eaa2eb45e072f4533a780d5b6..fbb7db86f310913e56a8f9a8a3b8e86771c8674f 100644
+index f5fbade6cddbe37a44f364c7265ec13c2475cea9..c44d6934984cbad249fe7e91c983678b62d8db2c 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -102,6 +102,17 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -101,6 +101,17 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
      private final LevelChunkTicks<Block> blockTicks;
      private final LevelChunkTicks<Fluid> fluidTicks;
      private LevelChunk.UnsavedListener unsavedListener = chunkPos -> {};
@@ -86,7 +86,7 @@ index 81466a5472eaee3eaa2eb45e072f4533a780d5b6..fbb7db86f310913e56a8f9a8a3b8e867
      // CraftBukkit start
      public boolean mustNotSave;
      public boolean needsDecoration;
-@@ -181,6 +192,8 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -180,6 +191,8 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
          this.debug = !empty && this.level.isDebug();
          this.defaultBlockState = empty ? VOID_AIR_BLOCKSTATE : AIR_BLOCKSTATE;
          // Paper end - get block chunk optimisation

@@ -8,10 +8,10 @@ As part of: Leaves (https://github.com/LeavesMC/Leaves/blob/f553c53e4230aa032e54
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index ec5fb02bc6fd633cdef41efcb57a042038b528d9..07715c0e9b6c85bbbf5f3cb7e5dc3764ca318779 100644
+index 21c79e7841a767c2b091925421f2199fcdd9b327..d3c964fe2ace0046bbf71bf73f5257b0751d0f56 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1422,7 +1422,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1404,7 +1404,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          }
  
          // SPIGOT-5478 must be called manually now
@@ -20,7 +20,7 @@ index ec5fb02bc6fd633cdef41efcb57a042038b528d9..07715c0e9b6c85bbbf5f3cb7e5dc3764
          // we clean the player's inventory after the EntityDeathEvent is called so plugins can get the exact state of the inventory.
          if (!event.getKeepInventory()) {
              // Paper start - PlayerDeathEvent#getItemsToKeep
-@@ -1469,6 +1469,15 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1451,6 +1451,15 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.connection.markClientUnloadedAfterDeath();
      }
  
@@ -37,36 +37,42 @@ index ec5fb02bc6fd633cdef41efcb57a042038b528d9..07715c0e9b6c85bbbf5f3cb7e5dc3764
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index c5b2a4af12b075765b91303ca8e0e2a33bce1441..076dc307d589f37bbc660586bb3a8ca673194156 100644
+index 949c7f7424e22343310388ef9ed572949bf87cd6..706e0317475dcbf3f881355cac22f8cab7e8e595 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -283,6 +283,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
-     public @Nullable Entity currentExplosionCause;
+@@ -297,6 +297,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+     public @Nullable Vec3 currentImpulseImpactPos;
      // CraftBukkit start
      public int expToDrop;
 +    public int expToReward; // Leaves - exp fix
-     public List<DefaultDrop> drops = new java.util.ArrayList<>(); // Paper - Restore vanilla drops behavior
+     public @Nullable List<DefaultDrop> deathDropItems = null;
      public final org.bukkit.craftbukkit.attribute.CraftAttributeMap craftAttributes;
      public boolean collides = true;
-@@ -1905,6 +1906,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
-                         sourceEntity.killedEntity((ServerLevel)this.level(), this, source);
-                     }
-                     this.gameEvent(GameEvent.ENTITY_DIE);
-+                    if (!this.wasExperienceConsumed()) this.dropExperience((ServerLevel) this.level(), source.getEntity()); // Leaves - exp fix
-                 } else {
-                     this.dead = false;
-                     this.setHealth((float) deathEvent.getReviveHealth());
-@@ -1981,7 +1983,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
-         this.drops = new java.util.ArrayList<>();
-         // this.dropEquipment(level); // CraftBukkit - moved up
-         // CraftBukkit end
--        this.dropExperience(level, source.getEntity());
-+        // this.dropExperience(level, source.getEntity()); // Leaves - exp fix
-         return deathEvent; // Paper
+@@ -1956,7 +1957,9 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+         }
+ 
+         this.dropEquipment(level);
+-        this.postDeathEventTasks.add(() -> this.dropExperience(level, source.getEntity())); // Paper
++        this.postDeathEventTasks.add(() -> {
++            if (!this.wasExperienceConsumed()) this.dropExperience(level, source.getEntity()); // Leaves - exp fix
++        }); // Paper
      }
  
+     protected void dropEquipment(final ServerLevel level) {
+@@ -1968,9 +1971,9 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+                 this.isAlwaysExperienceDropper()
+                     || this.lastHurtByPlayerMemoryTime > 0 && this.shouldDropExperience() && level.getGameRules().get(GameRules.MOB_DROPS)
+             )) {
+-            return this.getExperienceReward(level, killer); // CraftBukkit
++            return this.expToReward = this.getExperienceReward(level, killer); // CraftBukkit // Leaves - exp fix
+         }
+-        return 0; // CraftBukkit
++        return this.expToReward = 0; // CraftBukkit // Leaves - exp fix
+     }
+ 
+     protected void dropExperience(ServerLevel level, @Nullable Entity entity) {
 diff --git a/net/minecraft/world/level/block/entity/SculkCatalystBlockEntity.java b/net/minecraft/world/level/block/entity/SculkCatalystBlockEntity.java
-index d4055bb4f9269ae699e4afb0bfbd37ac67320417..5564444fe7df1ad6683e2ba80e08b988df51b4c4 100644
+index c29cded839be3fc58a22390c8682bef9885f12b1..3676d13e42ccc35f21099e7212ae7a0d88b44bae 100644
 --- a/net/minecraft/world/level/block/entity/SculkCatalystBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/SculkCatalystBlockEntity.java
 @@ -97,8 +97,7 @@ public class SculkCatalystBlockEntity extends BlockEntity implements GameEventLi

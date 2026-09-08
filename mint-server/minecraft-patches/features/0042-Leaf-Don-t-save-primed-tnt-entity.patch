@@ -8,10 +8,10 @@ As part of: Leaf (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/leaf-ser
 Licensed under: GPL-3.0 (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/licenses/GPL-3.0.txt)
 
 diff --git a/net/minecraft/world/entity/item/PrimedTnt.java b/net/minecraft/world/entity/item/PrimedTnt.java
-index 42aff39d537aa6b138bc4a76304d49f423212acd..ff5b049fd3ae436399fc0fbc99a983902b48eeae 100644
+index 4e8385b340686531297324983754fab4150e41b8..12ae6a34e20f09ab620394eb79fc02f9b58a6f48 100644
 --- a/net/minecraft/world/entity/item/PrimedTnt.java
 +++ b/net/minecraft/world/entity/item/PrimedTnt.java
-@@ -245,4 +245,11 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+@@ -252,4 +252,11 @@ public class PrimedTnt extends Entity implements TraceableEntity {
          return !this.level().paperConfig().fixes.preventTntFromMovingInWater && super.isPushedByFluid();
      }
      // Paper end - Option to prevent TNT from moving in water

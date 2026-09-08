@@ -5,7 +5,7 @@ Subject: [PATCH] Add config for username check
 
 
 diff --git a/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index d924369285878ff73811b8186cdb16e76f5dda90..0d4f285856e1dc2df190f9f8ffd8510ad4721a55 100644
+index f2329d1a9d9d4bf4c9d771e25e54f2f9ef65a76c..b4b401fd07bdd6b1ca078d1fdbcd70489a9b3c37 100644
 --- a/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 @@ -167,7 +167,8 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
@@ -19,7 +19,7 @@ index d924369285878ff73811b8186cdb16e76f5dda90..0d4f285856e1dc2df190f9f8ffd8510a
              && !this.iKnowThisMayNotBeTheBestIdeaButPleaseDisableUsernameValidation) {
              Validate.validState(StringUtil.isReasonablePlayerName(packet.name()), "Invalid characters in username");
 diff --git a/net/minecraft/util/StringUtil.java b/net/minecraft/util/StringUtil.java
-index 74f9da2d42cc4339ae28f344acaa80185b946f4d..29efdadab6b2afd20abd386737ea778ed0dc56cc 100644
+index 7957e0cfc43909c5268698a11c4933d20b4d9155..86b468bfc355daee7253606f0bcb0ce6980b976b 100644
 --- a/net/minecraft/util/StringUtil.java
 +++ b/net/minecraft/util/StringUtil.java
 @@ -63,8 +63,15 @@ public class StringUtil {

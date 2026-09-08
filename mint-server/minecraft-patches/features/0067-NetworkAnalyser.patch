@@ -5,7 +5,7 @@ Subject: [PATCH] NetworkAnalyser
 
 
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index 37c84f961a60637c5575c856d186309a2a6ed463..a4d94fb5f70f196ccb7c297c1bce241429c0f55e 100644
+index 17d188d307adb43007808593f2d2e738c55d1f32..14af4c8cd74ab44e0b0d6c62da1ed38cffb98b9a 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
 @@ -183,6 +183,9 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -19,7 +19,7 @@ index 37c84f961a60637c5575c856d186309a2a6ed463..a4d94fb5f70f196ccb7c297c1bce2414
  
      @Override
 diff --git a/net/minecraft/network/PacketDecoder.java b/net/minecraft/network/PacketDecoder.java
-index c70cb6a55e3ad8b9058778c0ed85d3fdcc6872e3..c78f1da44bd9d7f192b489216a86cd8a46581262 100644
+index 662c7502cbb783cfdabce874c0dadf67c80e9061..bfd842e50fd86d9840fae63ec6ac904b02da29ac 100644
 --- a/net/minecraft/network/PacketDecoder.java
 +++ b/net/minecraft/network/PacketDecoder.java
 @@ -1,6 +1,7 @@
@@ -52,7 +52,7 @@ index c70cb6a55e3ad8b9058778c0ed85d3fdcc6872e3..c78f1da44bd9d7f192b489216a86cd8a
              throw new IOException(
                  "Packet "
 diff --git a/net/minecraft/network/PacketEncoder.java b/net/minecraft/network/PacketEncoder.java
-index 03ea63536db3222c23fb870c286d68cb65d7773b..fd40850c24a325e3a039523acdadb8572fc4a55d 100644
+index 27316db9eb78660c6f54e1d1ea4dc7d584c7bb55..87837ee6ad452b0b59ac429680aab7fe64ca55e0 100644
 --- a/net/minecraft/network/PacketEncoder.java
 +++ b/net/minecraft/network/PacketEncoder.java
 @@ -1,6 +1,7 @@
@@ -80,6 +80,6 @@ index 03ea63536db3222c23fb870c286d68cb65d7773b..fd40850c24a325e3a039523acdadb857
 +                }
 +            }
 +            // Mint end
-         } catch (Throwable var9) {
-             LOGGER.error("Error sending packet {}", packetId, var9);
+         } catch (Throwable t) {
+             LOGGER.error("Error sending packet {}", packetId, t);
              if (packet.isSkippable()) {

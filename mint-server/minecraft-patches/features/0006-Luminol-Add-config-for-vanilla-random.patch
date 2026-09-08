@@ -8,7 +8,7 @@ Luminol (https://github.com/LuminolMC/Luminol)
 Licensed under: MIT (https://opensource.org/licenses/MIT)
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 13f23918b6a9db52742a01bf16c69389a1c16dc9..4f8cf309d2a36045d39c0e1b86c168ca3f762705 100644
+index 2a8a7aeddffdfed31cd6e1162c0756986049fbab..e677542711220726dd677556b304c5807f6dba38 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
@@ -23,8 +23,8 @@ index 13f23918b6a9db52742a01bf16c69389a1c16dc9..4f8cf309d2a36045d39c0e1b86c168ca
      public double yOld;
      public double zOld;
      public boolean noPhysics;
--    public final RandomSource random = SHARED_RANDOM; // Paper - Share random for entities to make them more random
-+    public final RandomSource random = VanillaRandomSourceConfig.enabled ? RandomSource.create() : SHARED_RANDOM; // Paper - Share random for entities to make them more random // Luminol - Add config for vanilla random SHARED_RANDOM
+-    protected final RandomSource random = SHARED_RANDOM; // Paper - Share random for entities to make them more random
++    protected final RandomSource random = VanillaRandomSourceConfig.enabled ? RandomSource.create() : SHARED_RANDOM; // Paper - Share random for entities to make them more random // Luminol - Add config for vanilla random SHARED_RANDOM
      public int tickCount;
      private int remainingFireTicks;
      private final EntityFluidInteraction fluidInteraction = new EntityFluidInteraction(Set.of(FluidTags.WATER, FluidTags.LAVA));

@@ -6,7 +6,7 @@ Subject: [PATCH] Merge Paper #11945 for temporary hopper behavior fix
 A hopper optimization fix on Paper's pr : https://github.com/PaperMC/Paper/pull/11945
 
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 6296ea5cff5f72d00fbb0bf86851a84e116ccfe2..87f158117c5612db06ea7e13f4a38b5931327926 100644
+index a858cb658af70f07614fa1f4d9e8a3435d5c161f..4edc793f72572a64820c1033c52138d43d60164a 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -606,6 +606,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen

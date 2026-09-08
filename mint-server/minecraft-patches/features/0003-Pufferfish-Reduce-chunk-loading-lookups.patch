@@ -8,7 +8,7 @@ As part of: Pufferfish (https://github.com/pufferfish-gg/Pufferfish/blob/04bc249
 Licensed under: GPL-3.0 (https://github.com/pufferfish-gg/Pufferfish/blob/04bc249f9eee6157338b6884113b6fa3192bf59b/PATCH-LICENSE)
 
 diff --git a/net/minecraft/world/entity/monster/EnderMan.java b/net/minecraft/world/entity/monster/EnderMan.java
-index 55a7cac408614d0efdece87a5380bd1fb7406200..c82676f3119f5bad449abe304b637ab72cfeaf1e 100644
+index 9b4ae8afda1f2202761cb49bc4f1181ce4eb55d5..a3be6baf14f7341b411cc2f8f6e240da5290094c 100644
 --- a/net/minecraft/world/entity/monster/EnderMan.java
 +++ b/net/minecraft/world/entity/monster/EnderMan.java
 @@ -298,11 +298,17 @@ public class EnderMan extends Monster implements NeutralMob {

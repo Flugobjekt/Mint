@@ -8,10 +8,10 @@ As part of: Lithium (https://github.com/CaffeineMC/lithium-fabric)
 Licensed under: LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.html)
 
 diff --git a/net/minecraft/core/BlockPos.java b/net/minecraft/core/BlockPos.java
-index b94e57a7776b211d509c873edbd6bc9128cc4d35..86a44af88fa331562589b1cd5c7300a436516bc7 100644
+index f4c9543cca33c3730b18cedb47127d702818acb1..a0fcd3d633f2f33067ed081de206e29fba9cf941 100644
 --- a/net/minecraft/core/BlockPos.java
 +++ b/net/minecraft/core/BlockPos.java
-@@ -333,7 +333,18 @@ public class BlockPos extends Vec3i {
+@@ -324,7 +324,18 @@ public class BlockPos extends Vec3i {
          };
      }
  

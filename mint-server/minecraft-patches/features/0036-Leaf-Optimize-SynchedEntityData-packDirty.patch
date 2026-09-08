@@ -8,23 +8,23 @@ As part of: Leaf (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/leaf-ser
 Licensed under: GPL-3.0 (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/licenses/GPL-3.0.txt)
 
 diff --git a/net/minecraft/network/syncher/SynchedEntityData.java b/net/minecraft/network/syncher/SynchedEntityData.java
-index 48e3b67adf9c889363fed6a79c0eb7744806f681..c797b69a7e080afb32e531dded7857fc728d2105 100644
+index 0075164bf057271d63a8b97473aa5c41c03eac91..6e3cc2f322f5a6af7779acf0f8342e8493a0b087 100644
 --- a/net/minecraft/network/syncher/SynchedEntityData.java
 +++ b/net/minecraft/network/syncher/SynchedEntityData.java
-@@ -83,7 +83,15 @@ public class SynchedEntityData {
-             return null;
-         } else {
-             this.isDirty = false;
--            List<SynchedEntityData.DataValue<?>> result = new ArrayList<>();
-+            // Leaf start - Optimize SynchedEntityData#packDirty
-+            int cap = 0;
-+            for (SynchedEntityData.DataItem<?> dataItem : this.itemsById) {
-+                if (dataItem.isDirty()) {
-+                    cap += 1;
-+                }
-+            }
-+            List<SynchedEntityData.DataValue<?>> result = new ArrayList<>(cap);
-+            // Leaf end - Optimize SynchedEntityData#packDirty
+@@ -84,7 +84,15 @@ public class SynchedEntityData {
+         }
  
-             for (SynchedEntityData.DataItem<?> dataItem : this.itemsById) {
-                 if (dataItem.isDirty()) {
+         this.isDirty = false;
+-        List<SynchedEntityData.DataValue<?>> result = new ArrayList<>();
++        // Leaf start - Optimize SynchedEntityData#packDirty
++        int cap = 0;
++        for (SynchedEntityData.DataItem<?> dataItem : this.itemsById) {
++            if (dataItem.isDirty()) {
++                cap += 1;
++            }
++        }
++        List<SynchedEntityData.DataValue<?>> result = new ArrayList<>(cap);
++        // Leaf end - Optimize SynchedEntityData#packDirty
+ 
+         for (SynchedEntityData.DataItem<?> dataItem : this.itemsById) {
+             if (dataItem.isDirty()) {

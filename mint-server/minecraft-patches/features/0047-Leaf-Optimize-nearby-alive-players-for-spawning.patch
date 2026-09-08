@@ -11,7 +11,7 @@ As part of: Leaf (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.7/leaf-serv
 Licensed under: MIT (https://github.com/Winds-Studio/Leaf/blob/7f3e240bbe0970683c40279a7a65f0fde47503b6/licenses/MIT.txt)
 
 diff --git a/net/minecraft/world/entity/EntitySelector.java b/net/minecraft/world/entity/EntitySelector.java
-index 050e1ba6cdc4c50aa188cef88f421a9a6c5f0836..6fdbc2b92b4f40e50308471b566f49d71fd555f4 100644
+index a3c13e421768f5e1a703b5b1167fa1c912b6f126..7a49d8bc63a343ce4daa1220d799b5fa3dc2dd59 100644
 --- a/net/minecraft/world/entity/EntitySelector.java
 +++ b/net/minecraft/world/entity/EntitySelector.java
 @@ -30,7 +30,7 @@ public final class EntitySelector {
@@ -24,23 +24,23 @@ index 050e1ba6cdc4c50aa188cef88f421a9a6c5f0836..6fdbc2b92b4f40e50308471b566f49d7
      // Paper end - Affects Spawning API
  
 diff --git a/net/minecraft/world/entity/monster/zombie/Zombie.java b/net/minecraft/world/entity/monster/zombie/Zombie.java
-index 90c2e90c8f7fe26093300cb4c1770218d01fd19b..c59f1b54b979e4540e4f299f0d2aa809afbbef92 100644
+index 82c44da59d17115711a37a119e7c25cae4758781..95716e22356fcb01bd315e6169fe826ddc962e09 100644
 --- a/net/minecraft/world/entity/monster/zombie/Zombie.java
 +++ b/net/minecraft/world/entity/monster/zombie/Zombie.java
-@@ -351,7 +351,7 @@ public class Zombie extends Monster {
-                     if (SpawnPlacements.isSpawnPositionOk(type, level, spawnPos)
-                         && SpawnPlacements.checkSpawnRules(type, level, EntitySpawnReason.REINFORCEMENT, spawnPos, level.getRandom())) {
-                         reinforcement.setPos(xt, yt, zt);
--                        if (!level.hasNearbyAlivePlayerThatAffectsSpawning(xt, yt, zt, 7.0) // Paper - affects spawning api
+@@ -353,7 +353,7 @@ public class Zombie extends Monster {
+                 if (SpawnPlacements.isSpawnPositionOk(type, level, spawnPos)
+                     && SpawnPlacements.checkSpawnRules(type, level, EntitySpawnReason.REINFORCEMENT, spawnPos, level.getRandom())) {
+                     reinforcement.setPos(xt, yt, zt);
+-                    if (!level.hasNearbyAlivePlayerThatAffectsSpawning(xt, yt, zt, 7.0) // Paper - affects spawning api
 +                        if (!level.hasNearbyAlivePlayerThatAffectsSpawningForZombie(xt, yt, zt, 7.0) // Paper - affects spawning api // Leaf - Optimize nearby alive players for spawning
-                             && level.isUnobstructed(reinforcement)
-                             && level.noCollision(reinforcement)
-                             && (reinforcement.canSpawnInLiquids() || !level.containsAnyLiquid(reinforcement.getBoundingBox()))) {
+                         && level.isUnobstructed(reinforcement)
+                         && level.noCollision(reinforcement)
+                         && (reinforcement.canSpawnInLiquids() || !level.containsAnyLiquid(reinforcement.getBoundingBox()))) {
 diff --git a/net/minecraft/world/level/BaseSpawner.java b/net/minecraft/world/level/BaseSpawner.java
-index 4657083b6c32bd72604aab122b1f44deeb4ac0a4..a720555e6ec61df940fd5fb4dcdf9b1d6d670dc9 100644
+index 2f89a9145902e514089924462003709f256ac3f4..ac86befb121bb035077001ef5c72eb418600ccb9 100644
 --- a/net/minecraft/world/level/BaseSpawner.java
 +++ b/net/minecraft/world/level/BaseSpawner.java
-@@ -60,7 +60,7 @@ public abstract class BaseSpawner {
+@@ -66,7 +66,7 @@ public abstract class BaseSpawner {
      }
  
      public boolean isNearPlayer(final Level level, final BlockPos pos) {
@@ -50,7 +50,7 @@ index 4657083b6c32bd72604aab122b1f44deeb4ac0a4..a720555e6ec61df940fd5fb4dcdf9b1d
  
      public void clientTick(final Level level, final BlockPos pos) {
 diff --git a/net/minecraft/world/level/EntityGetter.java b/net/minecraft/world/level/EntityGetter.java
-index 981273e63ee6568e324dd456ed04a8a9c1e0b01f..a8145c3203c431ea5582c7a88082022e8b4863a4 100644
+index f3f26db1c7fe6879dedeee470f25a226b32299ef..4409ecb2f74eecbfa144a7ca4d0255191a94c38e 100644
 --- a/net/minecraft/world/level/EntityGetter.java
 +++ b/net/minecraft/world/level/EntityGetter.java
 @@ -185,6 +185,89 @@ public interface EntityGetter extends ca.spottedleaf.moonrise.patches.chunk_syst

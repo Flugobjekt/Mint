@@ -10,10 +10,18 @@ Licensed under: LGPL-3.0 (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/
 This method is mainly visible when ton of villagers suddenly wants to sleep.
 
 diff --git a/net/minecraft/world/entity/ai/behavior/InsideBrownianWalk.java b/net/minecraft/world/entity/ai/behavior/InsideBrownianWalk.java
-index 37d902e81435f3a29f9a2706bbc2e86791c8f4b6..1100b2d4bd0632570c3255e6a7c2aeb7bf4d7b13 100644
+index b57a48842e31f678de4dcef689a4c9dcf9dd66af..cef150a3800a52afafe26cdac176e840ad161d32 100644
 --- a/net/minecraft/world/entity/ai/behavior/InsideBrownianWalk.java
 +++ b/net/minecraft/world/entity/ai/behavior/InsideBrownianWalk.java
-@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
+@@ -1,14 +1,12 @@
+ package net.minecraft.world.entity.ai.behavior;
+ 
+-import java.util.Collections;
+-import java.util.List;
+ import net.minecraft.core.BlockPos;
+-import net.minecraft.util.Util;
+ import net.minecraft.world.entity.PathfinderMob;
+ import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
  import net.minecraft.world.entity.ai.memory.MemoryModuleType;
  import net.minecraft.world.entity.ai.memory.WalkTarget;
  
@@ -21,26 +29,20 @@ index 37d902e81435f3a29f9a2706bbc2e86791c8f4b6..1100b2d4bd0632570c3255e6a7c2aeb7
  public class InsideBrownianWalk {
      public static BehaviorControl<PathfinderMob> create(final float speedModifier) {
          return BehaviorBuilder.create(
-@@ -18,22 +19,34 @@ public class InsideBrownianWalk {
-                     walkTarget -> (level, body, timestamp) -> {
-                         if (level.canSeeSky(body.blockPosition())) {
-                             return false;
--                        } else {
--                            BlockPos bodyPos = body.blockPosition();
--                            List<BlockPos> poses = BlockPos.betweenClosedStream(bodyPos.offset(-1, -1, -1), bodyPos.offset(1, 1, 1))
--                                .map(BlockPos::immutable)
--                                .collect(Util.toMutableList());
--                            Collections.shuffle(poses);
--                            poses.stream()
--                                .filter(pos -> !level.canSeeSky(pos))
--                                .filter(pos -> level.loadedAndEntityCanStandOn(pos, body))
--                                .filter(pos -> level.noCollision(body))
--                                .findFirst()
--                                .ifPresent(target -> walkTarget.set(new WalkTarget(target, speedModifier, 0)));
--                            return true;
+@@ -21,19 +19,31 @@ public class InsideBrownianWalk {
                          }
-+
-+                        BlockPos bodyPos = body.blockPosition();
+ 
+                         BlockPos bodyPos = body.blockPosition();
+-                        List<BlockPos> poses = BlockPos.betweenClosedStream(bodyPos.offset(-1, -1, -1), bodyPos.offset(1, 1, 1))
+-                            .map(BlockPos::immutable)
+-                            .collect(Util.toMutableList());
+-                        Collections.shuffle(poses);
+-                        poses.stream()
+-                            .filter(pos -> !level.canSeeSky(pos))
+-                            .filter(pos -> level.loadedAndEntityCanStandOn(pos, body))
+-                            .filter(pos -> level.noCollision(body))
+-                            .findFirst()
+-                            .ifPresent(target -> walkTarget.set(new WalkTarget(target, speedModifier, 0)));
 +                        BlockPos[] nearbyBlocks = cn.dreeam.leaf.util.BlockAreaUtils.getBlocksBetween(
 +                            bodyPos.offset(-1, -1, -1),
 +                            bodyPos.offset(1, 1, 1)
@@ -62,7 +64,7 @@ index 37d902e81435f3a29f9a2706bbc2e86791c8f4b6..1100b2d4bd0632570c3255e6a7c2aeb7
 +                                break;
 +                            }
 +                        }
-+                        return true;
+                         return true;
                      }
                  )
          );

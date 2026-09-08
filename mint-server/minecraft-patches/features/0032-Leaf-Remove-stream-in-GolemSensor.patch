@@ -13,7 +13,7 @@ As part of: Leaf (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/leaf-ser
 Licensed under: GPL-3.0 (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/licenses/GPL-3.0.txt)
 
 diff --git a/net/minecraft/world/entity/ai/sensing/GolemSensor.java b/net/minecraft/world/entity/ai/sensing/GolemSensor.java
-index 730b372e46d75e43a553b49dad41cc2d2f7510ee..e47877f5596171361be56d54b2f8dc29a710930d 100644
+index 6bdc94f4de3a3190907fe0b0325223ad31a600e9..600922d9346ceb65e4bb32a988ac8bf4357e636a 100644
 --- a/net/minecraft/world/entity/ai/sensing/GolemSensor.java
 +++ b/net/minecraft/world/entity/ai/sensing/GolemSensor.java
 @@ -32,8 +32,16 @@ public class GolemSensor extends Sensor<LivingEntity> {
@@ -21,12 +21,12 @@ index 730b372e46d75e43a553b49dad41cc2d2f7510ee..e47877f5596171361be56d54b2f8dc29
      public static void checkForNearbyGolem(final LivingEntity body) {
          Optional<List<LivingEntity>> livingEntitiesMemory = body.getBrain().getMemory(MemoryModuleType.NEAREST_LIVING_ENTITIES);
 -        if (!livingEntitiesMemory.isEmpty()) {
--            boolean golemPresent = livingEntitiesMemory.get().stream().anyMatch(entity -> entity.is(EntityType.IRON_GOLEM));
+-            boolean golemPresent = livingEntitiesMemory.get().stream().anyMatch(entity -> entity.is(EntityTypes.IRON_GOLEM));
 +        if (livingEntitiesMemory.isPresent()) {
 +            // Leaf start - Remove stream in GolemSensor
 +            boolean golemPresent = false;
 +            for (LivingEntity entity : livingEntitiesMemory.get()) {
-+                if (entity.is(EntityType.IRON_GOLEM)) {
++                if (entity.is(EntityTypes.IRON_GOLEM)) {
 +                    golemPresent = true;
 +                    break;
 +                }

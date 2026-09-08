@@ -8,25 +8,25 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/6a2b9ee6b330cd18b
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index d43be966a04456ba1a85c20f8b12f91de62a873d..37c84f961a60637c5575c856d186309a2a6ed463 100644
+index 40f54536422fa38bd84017fc634808016b4de58b..17d188d307adb43007808593f2d2e738c55d1f32 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
 @@ -258,8 +258,8 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
-                 if (this.stopReadingPackets) {
-                     return;
-                 }
--                if (this.allPacketCounts != null ||
--                    io.papermc.paper.configuration.GlobalConfiguration.get().packetLimiter.overrides.containsKey(packet.getClass())) {
-+                if (!dev.bacteriawa.mint.config.modules.optimizations.UnlimitPacketConfig.disablePacketLimit && (this.allPacketCounts != null || // Leaves - can disable
-+                    io.papermc.paper.configuration.GlobalConfiguration.get().packetLimiter.overrides.containsKey(packet.getClass()))) { // Leaves - can disable
-                     long time = System.nanoTime();
-                     synchronized (PACKET_LIMIT_LOCK) {
-                         if (this.allPacketCounts != null) {
+             if (this.stopReadingPackets) {
+                 return;
+             }
+-            if (this.allPacketCounts != null ||
+-                io.papermc.paper.configuration.GlobalConfiguration.get().packetLimiter.overrides.containsKey(packet.getClass())) {
++            if (!dev.bacteriawa.mint.config.modules.optimizations.UnlimitPacketConfig.disablePacketLimit && (this.allPacketCounts != null || // Leaves - can disable
++                io.papermc.paper.configuration.GlobalConfiguration.get().packetLimiter.overrides.containsKey(packet.getClass()))) { // Leaves - can disable
+                 long time = System.nanoTime();
+                 synchronized (PACKET_LIMIT_LOCK) {
+                     if (this.allPacketCounts != null) {
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 4924915ec3adf4d68ca537518fdffa52ec926bf7..1bdfd401413bf2c198fa553dfcf81d766a541548 100644
+index eda7e765c7c2ffee305edc81e0c7a6b1e5bfa18d..29dba43081962f0cec4e970af60050c32b228b51 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -874,7 +874,7 @@ public class ServerGamePacketListenerImpl
+@@ -877,7 +877,7 @@ public class ServerGamePacketListenerImpl
      public void handleCustomCommandSuggestions(final ServerboundCommandSuggestionPacket packet) {
          // PacketUtils.ensureRunningOnSameThread(packet, this, this.player.level()); // Paper - AsyncTabCompleteEvent; run this async
          // CraftBukkit start
@@ -35,7 +35,7 @@ index 4924915ec3adf4d68ca537518fdffa52ec926bf7..1bdfd401413bf2c198fa553dfcf81d76
              this.disconnectAsync(Component.translatable("disconnect.spam"), org.bukkit.event.player.PlayerKickEvent.Cause.SPAM); // Paper - Kick event cause // Paper - add proper async disconnect
              return;
          }
-@@ -2132,7 +2132,7 @@ public class ServerGamePacketListenerImpl
+@@ -2111,7 +2111,7 @@ public class ServerGamePacketListenerImpl
      private long lastLimitedPacket = -1;
  
      private boolean checkLimit(long timestamp) {
@@ -44,15 +44,15 @@ index 4924915ec3adf4d68ca537518fdffa52ec926bf7..1bdfd401413bf2c198fa553dfcf81d76
              return true;
          }
  
-@@ -2692,6 +2692,7 @@ public class ServerGamePacketListenerImpl
+@@ -2671,6 +2671,7 @@ public class ServerGamePacketListenerImpl
  
      // Spigot start - spam exclusions
-     private void detectRateSpam(String message) {
+     private void detectRateSpam(final TickThrottler throttler, final String message) {
 +        if (dev.bacteriawa.mint.config.modules.optimizations.UnlimitPacketConfig.disablePacketLimit) return; // Leaves - disable
-         // CraftBukkit start - replaced with thread safe throttle
          if (org.spigotmc.SpigotConfig.enableSpamExclusions) {
              for (String exclude : org.spigotmc.SpigotConfig.spamExclusions) {
-@@ -3474,7 +3475,7 @@ public class ServerGamePacketListenerImpl
+                 if (exclude != null && message.startsWith(exclude)) {
+@@ -3463,7 +3464,7 @@ public class ServerGamePacketListenerImpl
      @Override
      public void handlePlaceRecipe(final ServerboundPlaceRecipePacket packet) {
          // Paper start - auto recipe limit

@@ -7,7 +7,7 @@ add io_uring event loop group and channel selection for remote connections
 The IOUring transmission feature is only available on Linux platforms with kernel versions greater than 5.1
 
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index a4d94fb5f70f196ccb7c297c1bce241429c0f55e..c796821bd0afcac84ddfcfcb2ce3c809db9222a7 100644
+index 14af4c8cd74ab44e0b0d6c62da1ed38cffb98b9a..2ab3e44f1fd358996c4b5e97280f9a67eb8c2b29 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
 @@ -191,6 +191,9 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {

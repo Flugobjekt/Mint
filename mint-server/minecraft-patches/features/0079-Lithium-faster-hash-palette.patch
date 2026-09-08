@@ -38,7 +38,7 @@ index 3ee35885ea1f997bb5a36dd8d5f83b168883ba61..2cee753e9927f04d8c77e179f34442ef
          this.bits = bits;
          this.values = values;
 diff --git a/net/minecraft/world/level/chunk/Strategy.java b/net/minecraft/world/level/chunk/Strategy.java
-index a0f8b23612f8315eef2aaf4c036c2ec759aafa66..489a6f42a2e85f75f522d718a3e273f43548c4a2 100644
+index 958be147cd940ac430576ca5b4ada70fa5d051e3..d88f93a581c7087540872e8ad0e82d1d3f676db2 100644
 --- a/net/minecraft/world/level/chunk/Strategy.java
 +++ b/net/minecraft/world/level/chunk/Strategy.java
 @@ -4,6 +4,15 @@ import net.minecraft.core.IdMap;
@@ -59,7 +59,7 @@ index a0f8b23612f8315eef2aaf4c036c2ec759aafa66..489a6f42a2e85f75f522d718a3e273f4
      private static final Palette.Factory HASHMAP_PALETTE_FACTORY = HashMapPalette::create;
 @@ -36,11 +45,14 @@ public abstract class Strategy<T> {
              public Configuration getConfigurationForBitCount(final int entryBits) {
-                 return (Configuration)(switch (entryBits) {
+                 return switch (entryBits) {
                      case 0 -> Strategy.ZERO_BITS;
 -                    case 1, 2, 3, 4 -> Strategy.FOUR_BITS_LINEAR;
 -                    case 5 -> Strategy.FIVE_BITS_HASHMAP;
@@ -75,5 +75,5 @@ index a0f8b23612f8315eef2aaf4c036c2ec759aafa66..489a6f42a2e85f75f522d718a3e273f4
 +                    case 8 -> Strategy.HASH_8BIT;
 +                    // Leaf end - Lithium - faster hash palette
                      default -> new Configuration.Global(this.globalPaletteBitsInMemory, entryBits);
-                 });
+                 };
              }

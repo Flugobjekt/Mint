@@ -27,7 +27,7 @@ index 5c967b55f6ad3b660e9cdf74fadd90c5ea67afb9..7e30546c012533b7bd4ebb7ccaed30b9
      private NearestVisibleLivingEntities() {
          this.nearbyEntities = List.of();
 diff --git a/net/minecraft/world/entity/ai/sensing/VillagerBabiesSensor.java b/net/minecraft/world/entity/ai/sensing/VillagerBabiesSensor.java
-index e3b2089e74d57ae8a15e9e5d29f43054ec6ec295..fa23d161509058aab70a22c9635133df27681126 100644
+index 2f3e93d4ccf238d0656e69b789ddb811263df470..a6e6f803700dc67bc1379406119b707ebd6c6256 100644
 --- a/net/minecraft/world/entity/ai/sensing/VillagerBabiesSensor.java
 +++ b/net/minecraft/world/entity/ai/sensing/VillagerBabiesSensor.java
 @@ -22,7 +22,21 @@ public class VillagerBabiesSensor extends Sensor<LivingEntity> {
@@ -41,7 +41,7 @@ index e3b2089e74d57ae8a15e9e5d29f43054ec6ec295..fa23d161509058aab70a22c9635133df
 +
 +        // Inline and use single loop - copy from NearestVisibleLivingEntities#findAll and isVillagerBaby
 +        for (LivingEntity target : visibleEntities.nearbyEntities) {
-+            if (target.getType() == EntityType.VILLAGER
++            if (target.getType() == EntityTypes.VILLAGER
 +                    && target.isBaby()
 +                    && visibleEntities.lineOfSightTest.test(target)) {
 +                babies.add(target);

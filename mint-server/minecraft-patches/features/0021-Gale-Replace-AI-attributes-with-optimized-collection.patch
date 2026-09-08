@@ -13,7 +13,7 @@ As part of: Lithium (https://github.com/CaffeineMC/lithium)
 Licensed under: LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.html)
 
 diff --git a/net/minecraft/world/entity/ai/attributes/AttributeMap.java b/net/minecraft/world/entity/ai/attributes/AttributeMap.java
-index 0c8a719bdfb4932171a8f66d76b00cc499f5beb9..c03565f9182f59723178372ce20af7b752491d22 100644
+index 68bad6752bd313ca3ebde7fd4e3b2c46c5dee3ef..97157c6f6969e29074ec0676017ffa0d79a416cf 100644
 --- a/net/minecraft/world/entity/ai/attributes/AttributeMap.java
 +++ b/net/minecraft/world/entity/ai/attributes/AttributeMap.java
 @@ -1,8 +1,6 @@

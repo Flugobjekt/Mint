@@ -5,7 +5,7 @@ Subject: [PATCH] Supported Scoreboard And Schedule Command
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index c55c04e49069d8cbcc84aed0ff4f5747ae069531..f7bc9f2eef726a7166ab26b0a1c7e862838bf236 100644
+index 78f1a2c1a92356e800dc0a4865812bef4e1d4f38..6693dac1cbd2e880d4f84949fe9f29e5929cb5e9 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -239,8 +239,8 @@ public class Commands {

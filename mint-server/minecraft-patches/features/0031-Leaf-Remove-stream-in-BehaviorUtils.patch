@@ -8,7 +8,7 @@ As part of: Leaf (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/leaf-ser
 Licensed under: GPL-3.0 (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/licenses/GPL-3.0.txt)
 
 diff --git a/net/minecraft/world/entity/ai/behavior/BehaviorUtils.java b/net/minecraft/world/entity/ai/behavior/BehaviorUtils.java
-index 7172721045c7b40f49c714260c31c72073ea9cc4..2b51c7a1fe841a00ddaaa5ea6578aefe74524d1c 100644
+index f744ecd20dc70786311a7162b52aa4ceca0717db..3f9c96057062c7e564a612af9abb06cdddb687bf 100644
 --- a/net/minecraft/world/entity/ai/behavior/BehaviorUtils.java
 +++ b/net/minecraft/world/entity/ai/behavior/BehaviorUtils.java
 @@ -114,10 +114,33 @@ public class BehaviorUtils {

@@ -11,29 +11,29 @@ As part of: Lithium (https://github.com/CaffeineMC/lithium)
 Licensed under: LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 1464883f0d7651832d8165483e81fdce8a2390a1..99a89bc43a8afd4171304e3dcb22ce8bcef18c88 100644
+index 761dbf25e8bd7bfd7894da423f7797ebe1e059dd..39ee64257e3942766f123747b832a3c4c168691c 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -398,10 +398,13 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
-                 return null;
-             } else {
-                 Block newBlock = state.getBlock();
--                this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING).update(localX, y, localZ, state);
--                this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, state);
--                this.heightmaps.get(Heightmap.Types.OCEAN_FLOOR).update(localX, y, localZ, state);
--                this.heightmaps.get(Heightmap.Types.WORLD_SURFACE).update(localX, y, localZ, state);
-+                // Leaf start - Lithium - combined heightmap update
-+                Heightmap heightmap0 = this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING);
-+                Heightmap heightmap1 = this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES);
-+                Heightmap heightmap2 = this.heightmaps.get(Heightmap.Types.OCEAN_FLOOR);
-+                Heightmap heightmap3 = this.heightmaps.get(Heightmap.Types.WORLD_SURFACE);
-+                net.caffeinemc.mods.lithium.common.world.chunk.heightmap.CombinedHeightmapUpdate.updateHeightmaps(heightmap0, heightmap1, heightmap2, heightmap3, this, localX, y, localZ, state);
-+                // Leaf end - Lithium - combined heightmap update
-                 boolean isEmpty = section.hasOnlyAir();
-                 if (wasEmpty != isEmpty) {
-                     this.level.getChunkSource().getLightEngine().updateSectionStatus(pos, isEmpty);
+@@ -399,10 +399,13 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+         }
+ 
+         Block newBlock = state.getBlock();
+-        this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING).update(localX, y, localZ, state);
+-        this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, state);
+-        this.heightmaps.get(Heightmap.Types.OCEAN_FLOOR).update(localX, y, localZ, state);
+-        this.heightmaps.get(Heightmap.Types.WORLD_SURFACE).update(localX, y, localZ, state);
++        // Leaf start - Lithium - combined heightmap update
++        Heightmap heightmap0 = this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING);
++        Heightmap heightmap1 = this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES);
++        Heightmap heightmap2 = this.heightmaps.get(Heightmap.Types.OCEAN_FLOOR);
++        Heightmap heightmap3 = this.heightmaps.get(Heightmap.Types.WORLD_SURFACE);
++        net.caffeinemc.mods.lithium.common.world.chunk.heightmap.CombinedHeightmapUpdate.updateHeightmaps(heightmap0, heightmap1, heightmap2, heightmap3, this, localX, y, localZ, state);
++        // Leaf end - Lithium - combined heightmap update
+         boolean isEmpty = section.hasOnlyAir();
+         if (wasEmpty != isEmpty) {
+             this.level.getChunkSource().getLightEngine().updateSectionStatus(pos, isEmpty);
 diff --git a/net/minecraft/world/level/levelgen/Heightmap.java b/net/minecraft/world/level/levelgen/Heightmap.java
-index 3e980d92fdf0a15c9437e9610430b28fd4e6fc12..3101e1524fe5ac196e5e66b941ab4bfe6530c3a5 100644
+index dffa0d4859ecd7e21a9345f946083c56205145a3..10ddc4c8565f27a33eff2a1b8d6f11b36dc7ec24 100644
 --- a/net/minecraft/world/level/levelgen/Heightmap.java
 +++ b/net/minecraft/world/level/levelgen/Heightmap.java
 @@ -40,6 +40,12 @@ public class Heightmap {

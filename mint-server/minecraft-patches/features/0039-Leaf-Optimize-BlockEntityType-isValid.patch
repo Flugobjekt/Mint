@@ -8,10 +8,10 @@ As part of: Leaf (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/leaf-ser
 Licensed under: GPL-3.0 (https://github.com/Winds-Studio/Leaf/blob/ver/1.21.11/licenses/GPL-3.0.txt)
 
 diff --git a/net/minecraft/world/level/block/entity/BlockEntityType.java b/net/minecraft/world/level/block/entity/BlockEntityType.java
-index ac58bbed01edaf5dfe4839c89649ca865c339c8a..c03d35771f38b65e58de1152010b1b887387ea7d 100644
+index cda0d6d01035570844f03e523db7721cc6cc3e6d..2ca46f5c90654bd554fafad685d203b287b4c10b 100644
 --- a/net/minecraft/world/level/block/entity/BlockEntityType.java
 +++ b/net/minecraft/world/level/block/entity/BlockEntityType.java
-@@ -294,6 +294,14 @@ public class BlockEntityType<T extends BlockEntity> {
+@@ -21,6 +21,14 @@ public class BlockEntityType<T extends BlockEntity> {
          // Folia end - profiler
          this.factory = factory;
          this.validBlocks = validBlocks;
@@ -26,7 +26,7 @@ index ac58bbed01edaf5dfe4839c89649ca865c339c8a..c03d35771f38b65e58de1152010b1b88
      }
  
      public T create(final BlockPos worldPosition, final BlockState blockState) {
-@@ -301,7 +309,7 @@ public class BlockEntityType<T extends BlockEntity> {
+@@ -28,7 +36,7 @@ public class BlockEntityType<T extends BlockEntity> {
      }
  
      public boolean isValid(final BlockState state) {
@@ -36,10 +36,10 @@ index ac58bbed01edaf5dfe4839c89649ca865c339c8a..c03d35771f38b65e58de1152010b1b88
  
      @Deprecated
 diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
-index 1b56afc85b1dbfe470e2970c4fb642605d2271ef..e1f71f80d930f7422686985dc89f4d748e14ed56 100644
+index 83eb96bda00ea1becde49569a88f3a788f05a498..c1da58e3f56bdea859fbda896765a5dc5cebb7e9 100644
 --- a/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/net/minecraft/world/level/block/state/BlockBehaviour.java
-@@ -99,6 +99,7 @@ public abstract class BlockBehaviour implements FeatureElement {
+@@ -100,6 +100,7 @@ public abstract class BlockBehaviour implements FeatureElement {
      protected final BlockBehaviour.Properties properties;
      protected final Optional<ResourceKey<LootTable>> drops;
      protected final String descriptionId;

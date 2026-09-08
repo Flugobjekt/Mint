@@ -5,7 +5,7 @@ Subject: [PATCH] Add config for command block command execution
 
 
 diff --git a/net/minecraft/world/level/BaseCommandBlock.java b/net/minecraft/world/level/BaseCommandBlock.java
-index a4ee52e05041c310482fe5bb23155cac5b06c9c0..b62ff53c9914a6c71a5129de4a6a4e4781deb5c0 100644
+index 31f1583f29eebe5e13b5a7ac5116fdafc3592e5c..bb6377e90e9b417c5e833cc38973803d5187247f 100644
 --- a/net/minecraft/world/level/BaseCommandBlock.java
 +++ b/net/minecraft/world/level/BaseCommandBlock.java
 @@ -91,7 +91,7 @@ public abstract class BaseCommandBlock {
@@ -16,4 +16,4 @@ index a4ee52e05041c310482fe5bb23155cac5b06c9c0..b62ff53c9914a6c71a5129de4a6a4e47
 +        if (!dev.bacteriawa.mint.config.modules.experiment.CommandBlockConfig.enabled) return false; // Folia - region threading // Mint
          if (level.getGameTime() == this.lastExecution) {
              return false;
-         } else if ("Searge".equalsIgnoreCase(this.command)) {
+         }

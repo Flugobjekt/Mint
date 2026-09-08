@@ -8,10 +8,10 @@ pipelines and minor repeated getters with tight loops reduces allocations and le
 hot paths short-circuit earlier without changing behavior.
 
 diff --git a/net/minecraft/world/entity/npc/villager/Villager.java b/net/minecraft/world/entity/npc/villager/Villager.java
-index cba4af374ce9ae8f26770e399b8e6f97de69a287..29301ca6f975e6eddb9f308559828100082b186f 100644
+index e96b43a0ed51a3e5933420e0621a8645b7052ced..660b5311ec7bdf37fcb75ead23d59ec4b66f8380 100644
 --- a/net/minecraft/world/entity/npc/villager/Villager.java
 +++ b/net/minecraft/world/entity/npc/villager/Villager.java
-@@ -248,8 +248,9 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
+@@ -239,8 +239,9 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
      @Override
      public void inactiveTick() {
          // SPIGOT-3874, SPIGOT-3894, SPIGOT-3846, SPIGOT-5286 :(
@@ -23,7 +23,7 @@ index cba4af374ce9ae8f26770e399b8e6f97de69a287..29301ca6f975e6eddb9f308559828100
          }
          if (this.aware && this.isEffectiveAi()) { // Paper - Do not tick AI for inactive unaware mobs
              if (this.level().spigotConfig.tickInactiveVillagers) {
-@@ -906,11 +907,13 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
+@@ -908,11 +909,13 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
          if (this.wantsToSpawnGolem(timestamp)) {
              AABB villagerSearchBox = this.getBoundingBox().inflate(10.0, 10.0, 10.0);
              List<Villager> nearbyVillagers = level.getEntitiesOfClass(Villager.class, villagerSearchBox);
@@ -40,9 +40,9 @@ index cba4af374ce9ae8f26770e399b8e6f97de69a287..29301ca6f975e6eddb9f308559828100
 +            }
 +            if (remaining <= 0) {
                  if (SpawnUtil.trySpawnMob( // Paper - Set Golem Last Seen to stop it from spawning another one - switch to isPresent
-                         EntityType.IRON_GOLEM,
+                         EntityTypes.IRON_GOLEM,
                          EntitySpawnReason.MOB_SUMMONED,
-@@ -932,7 +935,7 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
+@@ -934,7 +937,7 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
      }
  
      public boolean wantsToSpawnGolem(final long timestamp) {
@@ -51,7 +51,7 @@ index cba4af374ce9ae8f26770e399b8e6f97de69a287..29301ca6f975e6eddb9f308559828100
      }
  
      @Override
-@@ -979,7 +982,7 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
+@@ -981,7 +984,7 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
  
      private boolean golemSpawnConditionsMet(final long gameTime) {
          Optional<Long> sleepMemory = this.brain.getMemory(MemoryModuleType.LAST_SLEPT);

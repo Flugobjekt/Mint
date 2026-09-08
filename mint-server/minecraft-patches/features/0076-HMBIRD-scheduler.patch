@@ -5,17 +5,16 @@ Subject: [PATCH] HMBIRD scheduler
 
 
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index 439c5a222fcf51c9dc5bfef9cdb23f419fffc28c..3b0273e3f8511b53fe37e6e36f957ee22d5edb85 100644
+index 5a72fa0d72bfdb927293abe921c57f6ae964a6ec..3b3ab7be4ec2aff956d5e39b801853f02d4dd9c4 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-@@ -2,6 +2,7 @@ package io.papermc.paper.threadedregions;
+@@ -1,5 +1,6 @@
+ package io.papermc.paper.threadedregions;
  
- import ca.spottedleaf.concurrentutil.numa.OSNuma;
- import ca.spottedleaf.concurrentutil.scheduler.EDFSchedulerThreadPool;
 +import dev.bacteriawa.mint.scheduler.HMBIRDSchedulerThreadPool;
- import ca.spottedleaf.concurrentutil.scheduler.SchedulableTick;
- import ca.spottedleaf.concurrentutil.scheduler.Scheduler;
- import ca.spottedleaf.concurrentutil.scheduler.StealingScheduledThreadPool;
+ import ca.spottedleaf.common.time.Schedule;
+ import ca.spottedleaf.common.time.TickData;
+ import ca.spottedleaf.common.time.TickTime;
 @@ -18,6 +19,7 @@ import net.minecraft.server.MinecraftServer;
  import net.minecraft.server.level.ServerLevel;
  import net.minecraft.world.level.ChunkPos;

@@ -5,7 +5,7 @@ Subject: [PATCH] Blank Configuration File
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index f7bc9f2eef726a7166ab26b0a1c7e862838bf236..ff8272d113c0000789e5861cd9930e32550abf19 100644
+index 6693dac1cbd2e880d4f84949fe9f29e5929cb5e9..b872a7287f279e6b7b09dbb1600db1ad8bcc7239 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -220,7 +220,7 @@ public class Commands {
@@ -38,10 +38,10 @@ index f7bc9f2eef726a7166ab26b0a1c7e862838bf236..ff8272d113c0000789e5861cd9930e32
          //TeamMsgCommand.register(this.dispatcher); // Folia - region threading - TODO later
          TeleportCommand.register(this.dispatcher);
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index cb4655fe65d1265176b61142051e46f9e92e36f4..5a1621a11a6a60b824502747bb8c35927876ae87 100644
+index 0ca0b841c2e89ef65526f8eeebfe130c443f69f9..feeb8be6788871ed1f9fa6d77b5699705dca40da 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -632,7 +632,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -604,7 +604,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          this.paperConfigurations = services.paper().configurations(); // Paper - add paper configuration files
      }
  
@@ -51,19 +51,19 @@ index cb4655fe65d1265176b61142051e46f9e92e36f4..5a1621a11a6a60b824502747bb8c3592
      public ChunkLoadStatusView createChunkLoadStatusView(final int radius) {
          return new ChunkLoadStatusView() {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index f7b5b37f06bf70ea826d809d204fbbfec9f7e741..c01ccae06d7c36268f1d47886497b7ed0f361d9b 100644
+index 90eb4094b5858125b0acd1e1f1bfc9dc06087360..280be0f2ee3c6ebe344c41277259110ba939a064 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -182,7 +182,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -166,7 +166,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
      }
  
      @Override
 -    protected boolean initServer() throws IOException {
 +    protected boolean initServer() throws Exception {
-         int managementPort = this.getProperties().managementServerPort;
-         if (this.getProperties().managementServerEnabled) {
-             String managementServerSecret = this.settings.getProperties().managementServerSecret;
-@@ -282,6 +282,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         Thread consoleThread = new Thread("Server console handler") {
+             @Override
+             public void run() {
+@@ -238,6 +238,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          this.paperConfigurations.initializeGlobalConfiguration(this.registryAccess());
          this.paperConfigurations.initializeWorldDefaultsConfiguration(this.registryAccess());
          // Paper end - initialize global and world-defaults configuration

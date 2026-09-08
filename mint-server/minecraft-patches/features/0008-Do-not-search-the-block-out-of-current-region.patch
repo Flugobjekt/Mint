@@ -5,7 +5,7 @@ Subject: [PATCH] Do not search the block out of current region
 
 
 diff --git a/net/minecraft/world/level/block/entity/TheEndGatewayBlockEntity.java b/net/minecraft/world/level/block/entity/TheEndGatewayBlockEntity.java
-index 832e04b97ffae60127537c0a8eb448af6602da1e..dcacb2135e2e549b8929ca7e173267fc24c537e5 100644
+index e29e379f9b2238eafe27545681bb19c710003bcc..af9afb353dd3efcfa26075e5cdd7616f83040190 100644
 --- a/net/minecraft/world/level/block/entity/TheEndGatewayBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/TheEndGatewayBlockEntity.java
 @@ -427,6 +427,7 @@ public class TheEndGatewayBlockEntity extends TheEndPortalBlockEntity {

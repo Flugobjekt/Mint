@@ -5,7 +5,7 @@ Subject: [PATCH] I18n support
 
 
 diff --git a/net/minecraft/locale/Language.java b/net/minecraft/locale/Language.java
-index 49c7f8194be8222e329fc3215a6aa6db0b221b11..505fd670d8e3410b9b63e13145b7b119d15bc294 100644
+index 47cd33bce908744e64356b585853d6a8ecf82443..3a9f8a7389e017363f54b5c7f0fac9031f6a284b 100644
 --- a/net/minecraft/locale/Language.java
 +++ b/net/minecraft/locale/Language.java
 @@ -66,7 +66,7 @@ public abstract class Language {
@@ -16,12 +16,12 @@ index 49c7f8194be8222e329fc3215a6aa6db0b221b11..505fd670d8e3410b9b63e13145b7b119
 +    public static void parseTranslations(final BiConsumer<String, String> output, final String path) { // Mint - I18n support
          try (InputStream stream = Language.class.getResourceAsStream(path)) {
              loadFromJson(stream, output);
-         } catch (JsonParseException | IOException var7) {
+         } catch (IOException | JsonParseException e) {
 diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
-index aa15c5c83f04e518c30a9dee7945062099197c25..b6e8b94c8139c5c0bb66a24690c107cf2a8395e1 100644
+index a4d608d64b7d3477c9144d93547fd3b4f39a1b02..4a4351d980ef229b18abe49cee498cb91edf9958 100644
 --- a/net/minecraft/server/Main.java
 +++ b/net/minecraft/server/Main.java
-@@ -142,6 +142,8 @@ public class Main {
+@@ -145,6 +145,8 @@ public class Main {
                  return;
              }
  
@@ -31,15 +31,10 @@ index aa15c5c83f04e518c30a9dee7945062099197c25..b6e8b94c8139c5c0bb66a24690c107cf
              boolean eulaAgreed = Boolean.getBoolean("com.mojang.eula.agree");
              if (eulaAgreed) {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index c01ccae06d7c36268f1d47886497b7ed0f361d9b..2c406c25febae951737d327db7f3dfd461b4f80e 100644
+index 280be0f2ee3c6ebe344c41277259110ba939a064..91a24de6d085fcc2a5e455638665a664d43f629b 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -278,11 +278,12 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
-         org.spigotmc.SpigotConfig.init((java.io.File) this.options.valueOf("spigot-settings"));
-         org.spigotmc.SpigotConfig.registerCommands();
-         // Spigot end
-         // Paper start - initialize global and world-defaults configuration
-         this.paperConfigurations.initializeGlobalConfiguration(this.registryAccess());
+@@ -239,6 +239,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          this.paperConfigurations.initializeWorldDefaultsConfiguration(this.registryAccess());
          // Paper end - initialize global and world-defaults configuration
          dev.bacteriawa.mint.core.MintBootstrap.setup();
