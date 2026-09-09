@@ -39,6 +39,8 @@ public class LinearRegionFile implements IRegionFile{
     private byte[][] bucketBuffers;
     private final byte[][] buffer = new byte[1024][];
     private final int[] bufferUncompressedSize = new int[1024];
+    // Includes chunks in compressed buckets that have not been opened yet.
+    private boolean[] chunkExistenceBitmap = new boolean[1024];
 
     private final long[] chunkTimestamps = new long[1024];
     private final Object markedToSaveLock = new Object();
@@ -106,6 +108,7 @@ public class LinearRegionFile implements IRegionFile{
                             this.buffer[chunkIndex] = finalCompressed;
                             this.bufferUncompressedSize[chunkIndex] = chunkData.length;
                         }
+                        this.chunkExistenceBitmap[chunkIndex] = this.bufferUncompressedSize[chunkIndex] > 0;
                     }
                 }
             } catch (IOException ex) {
@@ -194,6 +197,7 @@ public class LinearRegionFile implements IRegionFile{
 
                 this.buffer[i] = finalCompressed;
                 this.bufferUncompressedSize[i] = size;
+                this.chunkExistenceBitmap[i] = true;
                 this.chunkTimestamps[i] = getTimestamp(); // Use current timestamp as we don't have the original
             }
         }
@@ -209,7 +213,7 @@ public class LinearRegionFile implements IRegionFile{
         buffer.getInt(); // Skip region_x (Int)
         buffer.getInt(); // Skip region_z (Int)
 
-        boolean[] chunkExistenceBitmap = deserializeExistenceBitmap(buffer);
+        this.chunkExistenceBitmap = deserializeExistenceBitmap(buffer);
 
         while (true) {
             byte featureNameLength = buffer.get();
@@ -372,11 +376,7 @@ public class LinearRegionFile implements IRegionFile{
         dataStream.writeInt(regionX);
         dataStream.writeInt(regionZ);
 
-        boolean[] chunkExistenceBitmap = new boolean[1024];
-        for (int i = 0; i < 1024; i++) {
-            chunkExistenceBitmap[i] = (this.bufferUncompressedSize[i] > 0);
-        }
-        writeSerializedExistenceBitmap(dataStream, chunkExistenceBitmap);
+        writeSerializedExistenceBitmap(dataStream, this.chunkExistenceBitmap);
 
         writeNBTFeatures(dataStream);
 
@@ -481,7 +481,8 @@ public class LinearRegionFile implements IRegionFile{
                 int index = getChunkIndex(pos.x(), pos.z());
                 this.buffer[index] = b;
                 this.chunkTimestamps[index] = getTimestamp();
-                this.bufferUncompressedSize[getChunkIndex(pos.x(), pos.z())] = uncompressedSize;
+                this.bufferUncompressedSize[index] = uncompressedSize;
+                this.chunkExistenceBitmap[index] = uncompressedSize > 0;
             }
         } catch (IOException e) {
             LOGGER.error("Chunk write IOException " + e + " " + this.regionFile);
@@ -551,6 +552,7 @@ public class LinearRegionFile implements IRegionFile{
         int i = getChunkIndex(pos.x(), pos.z());
         this.buffer[i] = null;
         this.bufferUncompressedSize[i] = 0;
+        this.chunkExistenceBitmap[i] = false;
         this.chunkTimestamps[i] = 0;
         markToSave();
     }

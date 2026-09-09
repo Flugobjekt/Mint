@@ -13,7 +13,7 @@
 - Monitoring for Tpsbar, Membar, Regionbar, Networkbar
 - Integrated optimizations from various forks
 - Optimizations for single-threaded region performance
-- Support for linear region file format
+- Configurable region file formats (`MCA`, `LINEAR_V2` using header format v3 with existence bitmap fix, `B_LINEAR`)
 - Bug fixes
 - Improved stability
 - Integrated [Sentry](https://sentry.io/welcome/) from [Pufferfish](https://github.com/pufferfish-gg/Pufferfish) for easy, detailed tracking of all server errors

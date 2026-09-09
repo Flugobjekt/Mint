@@ -50,7 +50,11 @@
   "misc.regionbar.regionBarFormat": "This config is used to set region bar display format.",
   "misc.regionbar.utilColors": "This config is used to set region bar display color.",
   "misc.regionbar.updateInterval": "This config is used to set update interval.",
-  "misc.region_format.format": "This config is used to set region format.",
+  "misc.region_format.format": [
+      "Supported formats (case-insensitive): MCA (.mca), LINEAR_V2 (.linear), B_LINEAR (.b_linear).",
+      "LINEAR_V2 uses Linear v2 with on-disk version byte 3; B_LINEAR is a separate buffered format, not Linear v3.",
+      "Back up your world before changing formats. Changing this setting does not convert existing region files."
+    ],
   "misc.region_format.linearCompressionLevel": "This config is used to set region linear compression level.",
   "misc.region_format.linearIoThreadCount": "This config is used to set region linear io thread count.",
   "misc.region_format.linearIoFlushDelayMs": "This config is used to set region linear io flush delay. (MillSecond is compound unit.)",
