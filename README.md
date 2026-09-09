@@ -1,3 +1,7 @@
+> [!CAUTION]
+> **Important Warning for Linear & BufferedLinear Users (`LINEAR`, `LINEAR_V2`, `v3`, `B_LINEAR`):**  
+> **NEVER force-kill the server process** (e.g. `kill -9`, Task Manager, or pulling the power plug) while using any Linear region format! Force-stopping will interrupt ongoing Zstandard compression flushes and cause severe world corruption. **Always shut down gracefully using `/stop` or `/restart`!**
+
 <div align="center">
 <img src="image/mint.png" alt="Mint" width="500">
 
