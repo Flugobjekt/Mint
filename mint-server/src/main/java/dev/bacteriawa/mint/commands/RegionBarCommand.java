@@ -9,9 +9,6 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class RegionBarCommand extends MintSubCommand {
     public RegionBarCommand() {
         super("regionbar", MintCommand.MINT_ADMIN_PERMISSION);
