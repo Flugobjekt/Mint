@@ -111,8 +111,9 @@ public class LinearRegionFile implements IRegionFile{
                     }
                 }
             } catch (IOException ex) {
-                throw new RuntimeException("Region file corrupted: " + regionFile + " bucket: " + idx);
-                // TODO: Make sure the server crashes instead of corrupting the world
+                RuntimeException exception = new RuntimeException("Region file corrupted: " + regionFile + " bucket: " + idx, ex);
+                net.minecraft.server.MinecraftServer.getServer().moonrise$setChunkSystemCrash(exception);
+                throw exception;
             }
             bucketBuffers[idx] = null;
         }
