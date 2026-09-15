@@ -638,8 +638,8 @@ public class BufferedLinearRegionFile implements IRegionFile {
             return null;
         }
 
-        final int length = data.getInt(); // compressed length(int)
-        final long timestamp = data.getLong(); // TODO use this timestamp(long) for something?
+        data.getInt(); // compressed length(int)
+        data.getLong(); // TODO use this timestamp(long) for something?
         final int dataXXHash32 = data.getInt(); // XXHash32 for validation(int)
 
         final IOException xxHash32CheckFailedEx = this.checkXXHash32(dataXXHash32, data);
