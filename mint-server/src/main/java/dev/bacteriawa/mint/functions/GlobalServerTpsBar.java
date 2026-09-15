@@ -16,30 +16,66 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class GlobalServerTpsBar {
+public class GlobalServerTpsBar implements Listener {
     protected static final NullPlugin NULL_PLUGIN = new NullPlugin();
     protected static final Map<UUID, BossBar> uuid2Bossbars = Maps.newConcurrentMap();
-    protected static final Map<UUID, ScheduledTask> scheduledTasks = new HashMap<>();
+    protected static final Map<UUID, ScheduledTask> scheduledTasks = new ConcurrentHashMap<>();
 
     protected static volatile ScheduledTask scannerTask = null;
     private static final Logger logger = LogUtils.getLogger();
+    private static boolean listenerRegistered = false;
 
     public static void init(){
         cancelBarUpdateTask();
 
+        if (!listenerRegistered) {
+            try {
+                Bukkit.getPluginManager().registerEvents(new GlobalServerTpsBar(), NULL_PLUGIN);
+                listenerRegistered = true;
+            } catch (Exception e) {
+                logger.error("Failed to register TpsBar listener", e);
+            }
+        }
+
         scannerTask = Bukkit.getGlobalRegionScheduler().runAtFixedRate(NULL_PLUGIN, unused -> {
             try {
-                update();
                 cleanUp();
             }catch (Exception e){
                 logger.error(e.getLocalizedMessage());
             }
         }, 1, TpsBarConfig.updateInterval);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            scheduledTasks.computeIfAbsent(player.getUniqueId(), unused -> createBossBarForPlayer(player));
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        scheduledTasks.computeIfAbsent(event.getPlayer().getUniqueId(), unused -> createBossBarForPlayer(event.getPlayer()));
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        ScheduledTask task = scheduledTasks.remove(uuid);
+        if (task != null && !task.isCancelled()) {
+            task.cancel();
+        }
+        BossBar removed = uuid2Bossbars.remove(uuid);
+        if (removed != null) {
+            event.getPlayer().hideBossBar(removed);
+        }
     }
 
     public static void cancelBarUpdateTask(){
@@ -62,12 +98,6 @@ public class GlobalServerTpsBar {
 
     public static void setVisibilityForPlayer(Player target,boolean canSee){
         ((CraftPlayer) target).getHandle().isTpsBarVisible = canSee;
-    }
-
-    private static void update(){
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            scheduledTasks.computeIfAbsent(player.getUniqueId(), unused -> createBossBarForPlayer(player));
-        }
     }
 
     private static void cleanUp() {
