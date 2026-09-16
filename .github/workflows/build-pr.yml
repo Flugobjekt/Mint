@@ -37,6 +37,9 @@ jobs:
       - name: Apply server patches
         run: ./gradlew :mint-server:applyAllServerPatches --stacktrace --no-daemon --no-parallel --no-configuration-cache
 
+      - name: Run tests
+        run: ./gradlew :mint-api:test :mint-server:test --stacktrace --no-daemon
+
       - name: Create CreateJar
         run: ./gradlew createPaperclipJar --stacktrace --no-daemon
 
