@@ -1,0 +1,54 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Flugobjekt <Flieger>
+Date: Wed, 16 Sep 2026 22:14:32 +0200
+Subject: [PATCH] Drop CompoundTag string key interning and optimize nearby
+ chunk hot check
+
+
+diff --git a/net/minecraft/nbt/CompoundTag.java b/net/minecraft/nbt/CompoundTag.java
+index ea24c8299dc02a8f75704f94b67dd25521edb77b..b9f6aa790159b2df712244c44c55d6393c837d16 100644
+--- a/net/minecraft/nbt/CompoundTag.java
++++ b/net/minecraft/nbt/CompoundTag.java
+@@ -51,7 +51,7 @@ public final class CompoundTag implements Tag {
+ 
+         private static CompoundTag loadCompound(final DataInput input, final NbtAccounter accounter) throws IOException {
+             accounter.accountBytes(48L);
+-            it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<String, Tag> values = new cn.dreeam.leaf.util.map.StringCanonizingOpenHashMap<>(8, 0.8f); // Paper - Reduce memory footprint of CompoundTag // Leaf - Further reduce memory footprint of CompoundTag
++            it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<String, Tag> values = new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<>(8, 0.8f); // Paper - Reduce memory footprint of CompoundTag
+ 
+             byte tagType;
+             while ((tagType = input.readByte()) != 0) {
+@@ -165,7 +165,7 @@ public final class CompoundTag implements Tag {
+     }
+ 
+     public CompoundTag() {
+-        this(new cn.dreeam.leaf.util.map.StringCanonizingOpenHashMap<>(8, 0.8f)); // Paper - Reduce memory footprint of CompoundTag // Leaf - Further reduce memory footprint of CompoundTag
++        this(new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<>(8, 0.8f)); // Paper - Reduce memory footprint of CompoundTag
+     }
+ 
+     @Override
+@@ -394,11 +394,6 @@ public final class CompoundTag implements Tag {
+ 
+     @Override
+     public CompoundTag copy() {
+-        // Leaf start - Further reduce memory footprint of CompoundTag
+-        if (this.tags instanceof cn.dreeam.leaf.util.map.StringCanonizingOpenHashMap<Tag> stringCanonizingTags) {
+-            return new CompoundTag(cn.dreeam.leaf.util.map.StringCanonizingOpenHashMap.deepCopy(stringCanonizingTags, Tag::copy));
+-        }
+-        // Leaf end - Further reduce memory footprint of CompoundTag
+         // Paper start - Reduce memory footprint of CompoundTag
+         it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<String, Tag> ret = new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<>(this.tags.size(), 0.8f);
+         java.util.Iterator<java.util.Map.Entry<String, Tag>> iterator = (this.tags instanceof it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap) ? ((it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap)this.tags).object2ObjectEntrySet().fastIterator() : this.tags.entrySet().iterator();
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index 682d250f580e180496cf513eefae913967209212..08ff1c1c28b4724960b2718df2ddd06a595d2fd6 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -970,7 +970,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+         this.advancements.flushDirty(this, true);
+ 
+         // KioCG start - ChunkHot
+-        if (this.tickCount % 20 == 0){
++        if ((this.chunkHotBar || this.isTpsBarVisible) && this.tickCount % 20 == 0){
+             this.nearbyChunkHot = this.refreshNearbyChunkHot();
+         }
+         // KioCG end
