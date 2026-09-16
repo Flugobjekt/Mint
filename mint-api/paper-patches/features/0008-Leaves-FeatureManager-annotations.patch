@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Flugobjekt <Flieger>
+Date: Wed, 16 Sep 2026 17:23:42 +0200
+Subject: [PATCH] Leaves: FeatureManager annotations
+
+
+diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
+index 0ac1e049fad85de8365380b03e60d915ee643f16..c803d4173949c2aa3102fd84afa8717a1aa72000 100644
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -3048,6 +3048,7 @@ public final class Bukkit {
+     }
+ 
+     // Leaves start - Feature API
++    @org.jetbrains.annotations.NotNull
+     public static org.leavesmc.leaves.plugin.FeatureManager getFeatureManager() {
+         return server.getFeatureManager();
+     }
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index 7c62be9d7795b6dda594615c022032fc6a8f2b33..f7d6c20eb216510f2a0d87b4c73823c1ecb0c4cf 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -2777,7 +2777,7 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+     void allowPausing(@NotNull org.bukkit.plugin.Plugin plugin, boolean value);
+     // Paper end - API to check if the server is sleeping
+     // Leaves start - Feature API
+-    org.leavesmc.leaves.plugin.FeatureManager getFeatureManager();
++    @org.jetbrains.annotations.NotNull org.leavesmc.leaves.plugin.FeatureManager getFeatureManager();
+     // Leaves End - Feature API
+     // Folia start - region TPS API
+     /**
