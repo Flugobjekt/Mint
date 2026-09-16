@@ -5,10 +5,10 @@ Subject: [PATCH] Add tpsbar with chunkhot membar and regionbar
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftChunk.java b/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
-index a9712c50cb8002d5b63191701f6b1832369857e4..312e4780d4810be9d6547136e7e6eb67e3193130 100644
+index 362b9095d7eb8dce106cc0a91dc9367b82be793f..2ca48545a03ec9ac64f98b8e28df79c4bd1c2380 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
-@@ -410,7 +410,12 @@ public class CraftChunk implements Chunk {
+@@ -408,7 +408,12 @@ public class CraftChunk implements Chunk {
          Preconditions.checkArgument(0 <= z && z <= 15, "z out of range (expected 0-15, got %s)", z);
      }
  
@@ -24,10 +24,10 @@ index a9712c50cb8002d5b63191701f6b1832369857e4..312e4780d4810be9d6547136e7e6eb67
 +    // KioCG end
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index fbf31420cb83287c080c1832bccc167c81526563..4361cf2dbfb0d42a644458fa218921f52f3292f8 100644
+index 3d7def71d03d3ec3b3c3565ec07b46a3c1263aab..ef45cd1fbafabfd32745308ab92ba1cebd880617 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -2192,6 +2192,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+@@ -2191,6 +2191,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
              handle.newLevel = data.getIntOr("newLevel", 0);
              handle.expToDrop = data.getIntOr("expToDrop", 0);
              handle.keepLevel = data.getBooleanOr("keepLevel", false);
@@ -43,7 +43,7 @@ index fbf31420cb83287c080c1832bccc167c81526563..4361cf2dbfb0d42a644458fa218921f5
          });
      }
  
-@@ -2209,6 +2218,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+@@ -2208,6 +2217,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
          data.putLong("lastPlayed", System.currentTimeMillis());
          data.putString("lastKnownName", handle.getGameProfile().name());
  
@@ -60,7 +60,7 @@ index fbf31420cb83287c080c1832bccc167c81526563..4361cf2dbfb0d42a644458fa218921f5
          // Paper start - persist for use in offline save data
          ValueOutput paper = output.child("Paper");
          paper.putLong("LastLogin", handle.loginTime);
-@@ -3399,4 +3418,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+@@ -3396,4 +3415,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
          super.knockback(strength, directionX, directionZ);
          this.entity.hurtMarked = true;
      }

@@ -8,10 +8,10 @@ As part of: Leaves (https://github.com/HyacinthHaru/Leaves/blob/90080d238e2fcfc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 550c7eef69acde07c05b0cb75bf413186c09a26a..8e96326c55510642df01ef15e1a3edb1e81176cb 100644
+index 8a24b84db656da4cec59e9bccac306467c8155b0..0ac1e049fad85de8365380b03e60d915ee643f16 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -3042,4 +3042,10 @@ public final class Bukkit {
+@@ -3046,4 +3046,10 @@ public final class Bukkit {
      public static void restart() {
          server.restart();
      }
@@ -23,10 +23,10 @@ index 550c7eef69acde07c05b0cb75bf413186c09a26a..8e96326c55510642df01ef15e1a3edb1
 +    // Leaves end - Feature API
  }
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 23901bb9e01a90dc5f12e458b7188d51e91022b4..473b0e02c003d5317ef798c320e5c845124f4e12 100644
+index fb5ca3ab0ddba433a39e65572beeb955b50d6f72..7c62be9d7795b6dda594615c022032fc6a8f2b33 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2780,6 +2780,9 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2776,6 +2776,9 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      void allowPausing(@NotNull org.bukkit.plugin.Plugin plugin, boolean value);
      // Paper end - API to check if the server is sleeping

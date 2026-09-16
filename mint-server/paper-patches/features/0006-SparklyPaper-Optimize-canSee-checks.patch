@@ -7,7 +7,7 @@ Co-authored by: MrPowerGamerBR <git@mrpowergamerbr.com>
 As part of: SparklyPaper
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 4361cf2dbfb0d42a644458fa218921f52f3292f8..8e526f8d0ddcefb8eabb563e820ea518f18f2f50 100644
+index ef45cd1fbafabfd32745308ab92ba1cebd880617..ca1f315010c526cb2ddbb1c4708ba8f99c6e4d3a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -236,7 +236,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
@@ -19,7 +19,7 @@ index 4361cf2dbfb0d42a644458fa218921f52f3292f8..8e526f8d0ddcefb8eabb563e820ea518
      private final Set<UUID> unlistedEntities = new HashSet<>(); // Paper - Add Listing API for Player
      private static final WeakHashMap<Plugin, WeakReference<Plugin>> pluginWeakReferences = new WeakHashMap<>();
      private int hash = 0;
-@@ -2091,9 +2091,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+@@ -2090,9 +2090,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
  
      @Override
      public boolean canSee(org.bukkit.entity.Entity entity) {
