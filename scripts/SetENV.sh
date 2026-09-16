@@ -6,14 +6,19 @@ project_id="mint"
 project_id_b="Mint"
 
 commitid=$(git log --pretty='%h' -1)
-mcversion=$(prop mcVersion)
+branch="${GITHUB_REF_NAME:-$(git rev-parse --abbrev-ref HEAD)}"
+if [ "$branch" != "HEAD" ] && [ -n "$branch" ]; then
+  mcversion="$branch"
+else
+  mcversion=$(prop mcVersion)
+fi
 preVersion=$(prop preVersion)
 release_tag="$mcversion-$commitid"
 jarName="$project_id-$mcversion"
 jarName_dir="mint-server/build/libs/$jarName.jar"
 make_latest=$([ "$preVersion" = "true" ] && echo "false" || echo "true")
 
-paperclip_jar=$(ls mint-server/build/libs/$project_id-paperclip-*.jar 2>/dev/null | head -1)
+paperclip_jar=$(ls -t mint-server/build/libs/$project_id-paperclip-*.jar 2>/dev/null | head -1)
 if [ -z "$paperclip_jar" ]; then
   echo "ERROR: No paperclip jar found"
   exit 1
