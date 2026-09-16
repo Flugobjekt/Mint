@@ -114,9 +114,16 @@ public class GlobalServerNetworkBar {
                 Placeholder.parsed("incoming-pps", incomingPps)
         );
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (isPlayerVisible(player) && parsedMessage.getActionBar() != null) {
-                player.sendActionBar(parsedMessage.getActionBar());
+        net.kyori.adventure.text.Component actionBarComponent = parsedMessage.getActionBar();
+        if (actionBarComponent != null) {
+            net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket packet =
+                new net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket(
+                    io.papermc.paper.adventure.PaperAdventure.asVanilla(actionBarComponent)
+                );
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (isPlayerVisible(player)) {
+                    ((CraftPlayer) player).getHandle().connection.send(packet);
+                }
             }
         }
     }
