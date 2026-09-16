@@ -1,0 +1,67 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Flugobjekt <Flieger>
+Date: Sun, 13 Sep 2026 17:02:59 +0200
+Subject: [PATCH] Fix network disconnect deadlock and prioritize Epoll
+ transport
+
+
+diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
+index 2ab3e44f1fd358996c4b5e97280f9a67eb8c2b29..7a4f6a65ed43de3971c0b7cd25f583de9b67704a 100644
+--- a/net/minecraft/network/Connection.java
++++ b/net/minecraft/network/Connection.java
+@@ -191,9 +191,6 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     @Override
+     // Paper start - Handle large packets disconnecting client
+     public void exceptionCaught(final ChannelHandlerContext ctx, Throwable cause) {
+-        // Mint start - mirror ModernNetty exception logging behavior
+-        LOGGER.warn("netty exception", cause);
+-        // Mint end - mirror ModernNetty exception logging behavior
+         if (cause instanceof io.netty.handler.codec.EncoderException && cause.getCause() instanceof PacketEncoder.PacketTooLargeException packetTooLargeException) {
+             final Packet<?> packet = packetTooLargeException.getPacket();
+             if (packet.packetTooLarge(this)) {
+@@ -702,7 +699,13 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+         }
+ 
+         if (this.isConnected()) {
+-            this.channel.close().awaitUninterruptibly();
++            // Mint start - Fix deadlock when disconnect is called from event loop
++            if (this.channel.eventLoop().inEventLoop()) {
++                this.channel.close();
++            } else {
++                this.channel.close().awaitUninterruptibly();
++            }
++            // Mint end - Fix deadlock when disconnect is called from event loop
+             this.disconnectionDetails = details;
+         }
+         this.becomeActive = true; // Folia - region threading
+diff --git a/net/minecraft/server/network/EventLoopGroupHolder.java b/net/minecraft/server/network/EventLoopGroupHolder.java
+index 31ce7f83b2b912dc9a7bf448b70921b534312210..2fe3b40d1012339c535ce21fe50aceaced6c50fc 100644
+--- a/net/minecraft/server/network/EventLoopGroupHolder.java
++++ b/net/minecraft/server/network/EventLoopGroupHolder.java
+@@ -81,11 +81,6 @@ public abstract class EventLoopGroupHolder {
+     public static EventLoopGroupHolder remote(final java.net.@Nullable SocketAddress address, final boolean allowNativeTransport) {
+         // Paper end - Unix domain socket support
+         if (allowNativeTransport) {
+-            // Mint start - io_uring transport
+-            if (!(address instanceof io.netty.channel.unix.DomainSocketAddress) && IoUring.isAvailable()) {
+-                return IO_URING;
+-            }
+-            // Mint end - io_uring transport
+             if (KQueue.isAvailable()) {
+                 return KQUEUE;
+             }
+@@ -99,8 +94,13 @@ public abstract class EventLoopGroupHolder {
+                 }
+                 // Paper end - Unix domain socket support
+             }
+-        }
+ 
++            // Mint start - io_uring transport
++            if (!(address instanceof io.netty.channel.unix.DomainSocketAddress) && IoUring.isAvailable()) {
++                return IO_URING;
++            }
++            // Mint end - io_uring transport
++        }
+         return NIO;
+     }
+ 
