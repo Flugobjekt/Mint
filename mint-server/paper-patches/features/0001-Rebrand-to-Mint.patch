@@ -361,7 +361,7 @@ index 30815c8970b1f1c88a3c7bb5fd36efd915f1687d..cdeedd093d84078831b249ff80d6e80c
      private static final String USER_AGENT = BUILD_INFO.brandName() + "/" + BUILD_INFO.asString(VERSION_SIMPLE) + " (https://papermc.io)";
      private static final Gson GSON = new Gson();
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-index 10a0be7a4db1a51579d113d279af7a9effe7f438..d3d3d6468c09b5f33ac98f6938b849d413d1af3d 100644
+index 10a0be7a4db1a51579d113d279af7a9effe7f438..a4749baad9fbd6b3438e03608ce8d3dc66d91b03 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 @@ -31,6 +31,7 @@ public record ServerBuildInfoImpl(

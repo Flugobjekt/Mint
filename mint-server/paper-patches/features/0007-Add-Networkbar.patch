@@ -5,10 +5,10 @@ Subject: [PATCH] Add Networkbar
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 8e526f8d0ddcefb8eabb563e820ea518f18f2f50..5edcc209b7a0661fdb2a895c56d9907409c36c7c 100644
+index ca1f315010c526cb2ddbb1c4708ba8f99c6e4d3a..c48a64014b47b46ef4baf4d0f72395a8ddedd2e6 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -2208,6 +2208,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+@@ -2207,6 +2207,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
              //Luminol start - Regionbar
              getHandle().isRegionBarVisible = data.getBooleanOr("regionbarVisible", false);
              //Luminol end
@@ -18,7 +18,7 @@ index 8e526f8d0ddcefb8eabb563e820ea518f18f2f50..5edcc209b7a0661fdb2a895c56d99074
          });
      }
  
-@@ -2234,6 +2237,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+@@ -2233,6 +2236,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
          //Luminol start - Regionbar
          data.putBoolean("regionbarVisible", handle.isRegionBarVisible);
          //Luminol end

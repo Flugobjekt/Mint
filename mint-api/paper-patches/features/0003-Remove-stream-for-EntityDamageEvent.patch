@@ -5,10 +5,10 @@ Subject: [PATCH] Remove stream for EntityDamageEvent
 
 
 diff --git a/src/main/java/org/bukkit/event/entity/EntityDamageEvent.java b/src/main/java/org/bukkit/event/entity/EntityDamageEvent.java
-index 456ca29c92b64f029cf08fa11c96d653839ac746..80ba34b01c6b0513c7e055aa6d464a3185f6e43f 100644
+index 01d020c8848479e2dadd540d9bb3cf30f60722c9..3bdcc6681b63d0c289dadb65bbd4aee6f259f263 100644
 --- a/src/main/java/org/bukkit/event/entity/EntityDamageEvent.java
 +++ b/src/main/java/org/bukkit/event/entity/EntityDamageEvent.java
-@@ -57,9 +57,13 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
+@@ -58,9 +58,13 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
          super(damagee);
          Preconditions.checkArgument(modifiers.containsKey(DamageModifier.BASE), "BASE DamageModifier missing");
          Preconditions.checkArgument(!modifiers.containsKey(null), "Cannot have null DamageModifier");
