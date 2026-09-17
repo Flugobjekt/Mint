@@ -6,12 +6,7 @@ project_id="mint"
 project_id_b="Mint"
 
 commitid=$(git log --pretty='%h' -1)
-branch="${GITHUB_REF_NAME:-$(git rev-parse --abbrev-ref HEAD)}"
-if [ "$branch" != "HEAD" ] && [ -n "$branch" ]; then
-  mcversion="$branch"
-else
-  mcversion=$(prop mcVersion)
-fi
+mcversion=$(prop mcVersion)
 preVersion=$(prop preVersion)
 release_tag="$mcversion-$commitid"
 jarName="$project_id-$mcversion"
