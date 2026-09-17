@@ -36,9 +36,9 @@ gradle.lifecycle.beforeProject {
     val mintVersionChannel = providers.gradleProperty("channel").get().trim()
     val mintBuildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.trim()?.toInt()
     val versionString = if (mintBuildNumber == null) {
-        "$mcVersion.local-SNAPSHOT"
+        "$mcVersion-R0.1-SNAPSHOT"
     } else {
-        "$mcVersion.build.$mintBuildNumber-${mintVersionChannel.lowercase()}"
+        "$mcVersion-R0.1-SNAPSHOT"
     }
     version = versionString
 }
