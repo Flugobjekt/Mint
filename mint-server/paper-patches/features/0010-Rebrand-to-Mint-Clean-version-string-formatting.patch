@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Flugobjekt <Flieger>
+Date: Thu, 17 Sep 2026 11:20:07 +0200
+Subject: [PATCH] Rebrand to Mint: Clean version string formatting
+
+
+diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+index a4749baad9fbd6b3438e03608ce8d3dc66d91b03..8ea163997cf0bae19ebeb293f88a571300b26a9c 100644
+--- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
++++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+@@ -69,14 +69,11 @@ public record ServerBuildInfoImpl(
+     public @NotNull String asString(final @NotNull StringRepresentation representation) {
+         final StringBuilder sb = new StringBuilder();
+         sb.append(this.minecraftVersionId);
+-        sb.append('-');
+         if (this.buildNumber.isPresent()) {
+-            sb.append(this.buildNumber.getAsInt());
+-        } else {
+-            sb.append(BUILD_DEV);
++            sb.append('-').append(this.buildNumber.getAsInt());
+         }
+-        final boolean hasGitBranch = this.gitBranch.isPresent();
+         final boolean hasGitCommit = this.gitCommit.isPresent();
++        final boolean hasGitBranch = this.gitBranch.isPresent() && !this.gitBranch.get().equals(this.minecraftVersionId) && !this.gitBranch.get().equals("HEAD");
+         if (hasGitBranch || hasGitCommit) {
+             sb.append('-');
+         }
